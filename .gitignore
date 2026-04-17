@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+node_modules/
+pnpm-debug.log*
+allure-results/
+allure-report/

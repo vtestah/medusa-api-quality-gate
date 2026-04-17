@@ -1,0 +1,13 @@
+.git
+.gitignore
+.DS_Store
+.env
+node_modules
+apps/*/node_modules
+apps/*/.next
+apps/*/dist
+allure-results
+allure-report
+.pytest_cache
+.mypy_cache
+.ruff_cache
