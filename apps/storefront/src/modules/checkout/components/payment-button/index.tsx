@@ -2,6 +2,7 @@
 
 import { isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
+import { useMarket } from "@lib/hooks/use-market"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
@@ -17,6 +18,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
 }) => {
+  const market = useMarket()
   const notReady =
     !cart ||
     !cart.shipping_address ||
@@ -37,10 +39,14 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isManual(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <ManualTestPaymentButton
+          notReady={notReady}
+          data-testid={dataTestId}
+          label={market.checkoutCopy.placeOrder}
+        />
       )
     default:
-      return <Button disabled>Select a payment method</Button>
+      return <Button disabled>{market.checkoutCopy.choosePaymentMethod}</Button>
   }
 }
 
@@ -55,6 +61,7 @@ const StripePaymentButton = ({
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const market = useMarket()
 
   const onPaymentCompleted = async () => {
     await placeOrder()
@@ -141,7 +148,7 @@ const StripePaymentButton = ({
         isLoading={submitting}
         data-testid={dataTestId}
       >
-        Place order
+        {market.checkoutCopy.placeOrder}
       </Button>
       <ErrorMessage
         error={errorMessage}
@@ -151,7 +158,13 @@ const StripePaymentButton = ({
   )
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  notReady,
+  label,
+}: {
+  notReady: boolean
+  label: string
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -180,7 +193,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         size="large"
         data-testid="submit-order-button"
       >
-        Place order
+        {label}
       </Button>
       <ErrorMessage
         error={errorMessage}

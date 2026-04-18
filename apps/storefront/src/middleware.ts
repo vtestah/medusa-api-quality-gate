@@ -1,9 +1,11 @@
+import { getMarketConfig } from "@lib/data/markets"
 import { HttpTypes } from "@medusajs/types"
 import { NextRequest, NextResponse } from "next/server"
 
 const BACKEND_URL = process.env.MEDUSA_BACKEND_URL
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
+const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "ru"
+const LOCALE_COOKIE_NAME = "_medusa_locale"
 
 const regionMapCache = {
   regionMap: new Map<string, HttpTypes.StoreRegion>(),
@@ -100,6 +102,17 @@ async function getCountryCode(
   }
 }
 
+function setLocaleCookie(response: NextResponse, countryCode: string) {
+  const locale = getMarketConfig(countryCode).locale
+
+  response.cookies.set(LOCALE_COOKIE_NAME, locale, {
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: false,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  })
+}
+
 /**
  * Middleware to handle region selection and onboarding status.
  */
@@ -121,7 +134,9 @@ export async function middleware(request: NextRequest) {
 
   // if one of the country codes is in the url and the cache id is set, return next
   if (urlHasCountryCode && cacheIdCookie) {
-    return NextResponse.next()
+    const nextResponse = NextResponse.next()
+    setLocaleCookie(nextResponse, countryCode)
+    return nextResponse
   }
 
   // if one of the country codes is in the url and the cache id is not set, set the cache id and redirect
@@ -129,6 +144,7 @@ export async function middleware(request: NextRequest) {
     response.cookies.set("_medusa_cache_id", cacheId, {
       maxAge: 60 * 60 * 24,
     })
+    setLocaleCookie(response, countryCode)
 
     return response
   }
@@ -147,6 +163,7 @@ export async function middleware(request: NextRequest) {
   if (!urlHasCountryCode && countryCode) {
     redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
     response = NextResponse.redirect(`${redirectUrl}`, 307)
+    setLocaleCookie(response, countryCode)
   } else if (!urlHasCountryCode && !countryCode) {
     // Handle case where no valid country code exists (empty regions)
     return new NextResponse(

@@ -1,5 +1,6 @@
 "use client"
 
+import { useMarket } from "@lib/hooks/use-market"
 import { Button } from "@medusajs/ui"
 
 import OrderCard from "../order-card"
@@ -7,6 +8,8 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { HttpTypes } from "@medusajs/types"
 
 const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
+  const market = useMarket()
+
   if (orders?.length) {
     return (
       <div className="flex flex-col gap-y-8 w-full">
@@ -27,14 +30,18 @@ const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
       className="w-full flex flex-col items-center gap-y-4"
       data-testid="no-orders-container"
     >
-      <h2 className="text-large-semi">Nothing to see here</h2>
+      <h2 className="text-large-semi">
+        {market.code === "ru" ? "Пока пусто" : "Nothing to see here"}
+      </h2>
       <p className="text-base-regular">
-        You don&apos;t have any orders yet, let us change that {":)"}
+        {market.code === "ru"
+          ? "У вас пока нет заказов. Самое время это исправить."
+          : "You don&apos;t have any orders yet. Let&apos;s change that."}
       </p>
       <div className="mt-4">
         <LocalizedClientLink href="/" passHref>
           <Button data-testid="continue-shopping-button">
-            Continue shopping
+            {market.code === "ru" ? "Продолжить покупки" : "Continue shopping"}
           </Button>
         </LocalizedClientLink>
       </div>

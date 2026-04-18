@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import { getMarketConfig } from "@lib/data/markets"
 import { getCollectionByHandle, listCollections } from "@lib/data/collections"
 import { listRegions } from "@lib/data/regions"
 import { StoreCollection, StoreRegion } from "@medusajs/types"
@@ -52,6 +53,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
+  const market = getMarketConfig(params.countryCode)
   const collection = await getCollectionByHandle(params.handle)
 
   if (!collection) {
@@ -59,7 +61,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   const metadata = {
-    title: `${collection.title} | Medusa Store`,
+    title: `${collection.title} | ${market.brandName}`,
     description: `${collection.title} collection`,
   } as Metadata
 

@@ -1,3 +1,4 @@
+import { getMarketConfigByCurrency } from "@lib/data/markets"
 import { getPercentageDiff } from "@lib/util/get-percentage-diff"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
@@ -14,9 +15,10 @@ const LineItemPrice = ({
   style = "default",
   currencyCode,
 }: LineItemPriceProps) => {
+  const market = getMarketConfigByCurrency(currencyCode)
   const { total, original_total } = item
-  const originalPrice = original_total
-  const currentPrice = total
+  const originalPrice = original_total ?? total ?? 0
+  const currentPrice = total ?? 0
   const hasReducedPrice = currentPrice < originalPrice
 
   return (
@@ -26,7 +28,7 @@ const LineItemPrice = ({
           <>
             <p>
               {style === "default" && (
-                <span className="text-ui-fg-subtle">Original: </span>
+                <span className="text-ui-fg-subtle">{market.uiCopy.original}: </span>
               )}
               <span
                 className="line-through text-ui-fg-muted"
@@ -40,7 +42,7 @@ const LineItemPrice = ({
             </p>
             {style === "default" && (
               <span className="text-ui-fg-interactive">
-                -{getPercentageDiff(originalPrice, currentPrice || 0)}%
+                -{getPercentageDiff(originalPrice, currentPrice)}%
               </span>
             )}
           </>

@@ -1,4 +1,5 @@
 import { Radio as RadioGroupOption } from "@headlessui/react"
+import { useMarket } from "@lib/hooks/use-market"
 import { Text, clx } from "@medusajs/ui"
 import React, { useContext, useMemo, type JSX } from "react"
 
@@ -79,6 +80,7 @@ export const StripeCardContainer = ({
   setCardComplete: (complete: boolean) => void
 }) => {
   const stripeReady = useContext(StripeContext)
+  const market = useMarket()
 
   const useOptions: StripeCardElementOptions = useMemo(() => {
     return {
@@ -108,7 +110,7 @@ export const StripeCardContainer = ({
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
             <Text className="txt-medium-plus text-ui-fg-base mb-1">
-              Enter your card details:
+              {market.checkoutCopy.cardDetails}
             </Text>
             <CardElement
               options={useOptions as StripeCardElementOptions}

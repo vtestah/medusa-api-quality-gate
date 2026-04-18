@@ -17,6 +17,14 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || 'supersecret',
     },
   },
+  modules: [
+    {
+      resolve: "@medusajs/medusa/translation",
+    },
+  ],
+  featureFlags: {
+    translation: true,
+  },
   admin: {
     vite: () => ({
       server: {

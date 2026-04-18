@@ -1,14 +1,23 @@
 import { Metadata } from "next"
 
+import { getTranslator } from "@i18n/get-messages"
+import { getMarketConfig } from "@lib/data/markets"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
 import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
-export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
-  description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+export async function generateMetadata(props: {
+  params: Promise<{ countryCode: string }>
+}): Promise<Metadata> {
+  const { countryCode } = await props.params
+  const market = getMarketConfig(countryCode)
+  const t = await getTranslator(countryCode)
+
+  return {
+    title: t("Metadata.homeTitle", { brand: market.brandName }),
+    description: t("Metadata.homeDescription"),
+  }
 }
 
 export default async function Home(props: {
@@ -30,7 +39,7 @@ export default async function Home(props: {
 
   return (
     <>
-      <Hero />
+      <Hero countryCode={countryCode} />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />

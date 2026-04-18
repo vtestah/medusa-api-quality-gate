@@ -1,0 +1,210 @@
+{
+  "Hero": {
+    "eyebrow": "United States market",
+    "title": "{brand}: fashion basics without extra noise",
+    "subtitle": "Clean everyday essentials with predictable fit, fast fulfillment, and prices in US dollars.",
+    "primaryCta": "Browse catalog"
+  },
+  "Nav": {
+    "account": "Account",
+    "cart": "Cart"
+  },
+  "SideMenu": {
+    "menu": "Menu",
+    "home": "Home",
+    "store": "Store",
+    "account": "Account",
+    "cart": "Cart",
+    "rightsReserved": "All rights reserved."
+  },
+  "Footer": {
+    "categories": "Categories",
+    "collections": "Collections",
+    "engineering": "Engineering",
+    "github": "GitHub",
+    "documentation": "Documentation",
+    "sourceCode": "Source code",
+    "rightsReserved": "All rights reserved.",
+    "builtWith": "Built with"
+  },
+  "Store": {
+    "allProducts": "All products",
+    "sortBy": "Sort by",
+    "latestArrivals": "Latest arrivals",
+    "priceLowToHigh": "Price: low to high",
+    "priceHighToLow": "Price: high to low"
+  },
+  "Cart": {
+    "title": "Cart",
+    "summary": "Summary",
+    "goToCheckout": "Go to checkout",
+    "signInPromptTitle": "Already have an account?",
+    "signInPromptBody": "Sign in to speed up checkout and reuse your saved addresses.",
+    "signIn": "Sign in",
+    "emptyTitle": "Your cart is empty",
+    "emptyBody": "Add products from the Basis catalog to start checkout.",
+    "emptyCta": "Go to store",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "taxes": "Taxes",
+    "subtotalWithHint": "Subtotal (excluding shipping and taxes)",
+    "goToCart": "Go to cart",
+    "cartEmpty": "Your cart is empty.",
+    "exploreProducts": "Explore products",
+    "remove": "Remove"
+  },
+  "Checkout": {
+    "backToCart": "Back to cart",
+    "backShort": "Back",
+    "address": "Address",
+    "billingAddress": "Billing address",
+    "sameAsBilling": "Same as billing address",
+    "contact": "Contact",
+    "delivery": "Delivery",
+    "edit": "Edit",
+    "continueToDelivery": "Continue to delivery",
+    "continueToPayment": "Continue to payment",
+    "continueToReview": "Continue to review",
+    "payment": "Payment",
+    "paymentMethod": "Payment method",
+    "paymentDetails": "Payment details",
+    "cardDetails": "Card details",
+    "cardStepHint": "Card details will be requested on the next step",
+    "choosePaymentMethod": "Choose a payment method",
+    "placeOrder": "Place order",
+    "review": "Review",
+    "reviewDisclaimer": "Review your order details before confirmation. After placing the order, you will receive a confirmation email.",
+    "shippingMethod": "Shipping method",
+    "shippingMethodHint": "Choose the shipping method that fits this order.",
+    "pickup": "Pickup",
+    "giftCard": "Gift card"
+  },
+  "CheckoutSummary": {
+    "inYourCart": "In your cart"
+  },
+  "CountrySelect": {
+    "market": "Market"
+  },
+  "AccountNav": {
+    "account": "Account",
+    "hello": "Hello,",
+    "overview": "Overview",
+    "profile": "Profile",
+    "addresses": "Addresses",
+    "orders": "Orders",
+    "logout": "Logout"
+  },
+  "AccountOverview": {
+    "signedInAs": "Signed in as",
+    "completed": "completed",
+    "saved": "saved",
+    "recentOrders": "Recent orders",
+    "datePlaced": "Date placed",
+    "orderNumber": "Order number",
+    "totalAmount": "Total amount",
+    "noRecentOrders": "You do not have any recent orders yet.",
+    "goToOrder": "Go to order #{displayId}"
+  },
+  "AccountLogin": {
+    "welcomeBack": "Welcome back",
+    "subtitle": "Sign in to manage orders, addresses, and returns in {brand}.",
+    "emailLabel": "Email",
+    "emailTitle": "Enter a valid email address.",
+    "passwordLabel": "Password",
+    "signIn": "Sign in",
+    "notMember": "Not a member?",
+    "joinUs": "Join us"
+  },
+  "AccountRegister": {
+    "memberTitle": "Create your Basis account",
+    "memberSubtitle": "Create an account to save addresses, track orders, and speed up checkout.",
+    "firstNameLabel": "First name",
+    "lastNameLabel": "Last name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "passwordLabel": "Password",
+    "accountAgreementPrefix": "By creating an account, you agree to the",
+    "privacyPolicy": "privacy policy",
+    "and": "and",
+    "termsOfUse": "terms of use",
+    "joinUs": "Create account",
+    "alreadyMember": "Already a member?",
+    "signIn": "Sign in"
+  },
+  "AccountLayout": {
+    "supportTitle": "Need help?",
+    "supportBody": "Common questions and answers are collected on the Basis customer service page.",
+    "customerService": "Customer service"
+  },
+  "CommonUI": {
+    "original": "Original price",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "saveChanges": "Save changes",
+    "updated": "{label} updated successfully",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "Order": {
+    "thankYou": "Thank you for your order",
+    "orderPlaced": "Your order has been placed",
+    "summary": "Order summary",
+    "orderDetails": "Order details",
+    "backToOverview": "Back to orders",
+    "orderSummary": "Order summary",
+    "confirmationSent": "Confirmation sent to",
+    "orderDate": "Order date",
+    "orderNumber": "Order number",
+    "orderStatus": "Order status",
+    "paymentStatus": "Payment status",
+    "needHelp": "Need help?",
+    "contact": "Contact us",
+    "returnsExchanges": "Returns and exchanges",
+    "itemSingle": "item",
+    "itemPlural": "items",
+    "moreItems": "more items",
+    "seeDetails": "See details",
+    "paidAt": "paid at"
+  },
+  "AccountPages": {
+    "profileHeading": "Profile",
+    "profileDescription": "Manage contact details and billing information for your Basis orders.",
+    "ordersHeading": "Orders",
+    "ordersDescription": "Review your previous orders and their status. If needed, you can later initiate returns or exchanges.",
+    "addressesHeading": "Shipping addresses",
+    "addressesDescription": "View and update your shipping addresses. Saved addresses will be available during checkout."
+  },
+  "Metadata": {
+    "homeTitle": "{brand} | US storefront demo",
+    "homeDescription": "Dual-market Medusa and Next.js storefront demo for the US market.",
+    "cartTitle": "Cart | {brand}",
+    "cartDescription": "Review items, totals, and checkout details in your {brand} cart.",
+    "checkoutTitle": "Checkout | {brand}",
+    "signInTitle": "Sign in | {brand}",
+    "signInDescription": "Sign in to your {brand} account to manage orders, addresses, and returns.",
+    "accountTitle": "Account | {brand}",
+    "accountDescription": "Basis account overview: profile, addresses, and recent orders.",
+    "profileTitle": "Profile | {brand}",
+    "profileDescription": "Update profile and billing information in your {brand} account.",
+    "storeTitle": "Store | {brand}",
+    "storeDescription": "Explore the full Basis catalog.",
+    "ordersTitle": "Orders | {brand}",
+    "ordersDescription": "Order history and delivery statuses in your {brand} account.",
+    "addressesTitle": "Addresses | {brand}",
+    "addressesDescription": "Manage saved shipping addresses in your {brand} account."
+  },
+  "Products": {
+    "relatedProducts": "Related products",
+    "relatedProductsDescription": "You might also want to check out these products.",
+    "from": "From",
+    "select": "Select {title}",
+    "selectOptions": "Select Options",
+    "selectVariant": "Select variant"
+  }
+}

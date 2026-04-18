@@ -6,6 +6,8 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f medusa",
     "docker:logs:storefront": "docker compose logs -f storefront",
+    "docker:seed-demo": "docker compose exec -T medusa pnpm seed && pnpm docker:sync-key && docker compose up -d storefront",
+    "docker:sync-key": "./scripts/sync-publishable-key.sh",
     "storefront:dev": "pnpm --dir apps/storefront dev",
     "storefront:lint": "pnpm --dir apps/storefront lint"
   },

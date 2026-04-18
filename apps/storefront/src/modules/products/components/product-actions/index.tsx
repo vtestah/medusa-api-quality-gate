@@ -1,6 +1,7 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { useMarket } from "@lib/hooks/use-market"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -32,6 +33,7 @@ export default function ProductActions({
   product,
   disabled,
 }: ProductActionsProps) {
+  const market = useMarket()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -177,10 +179,10 @@ export default function ProductActions({
           data-testid="add-product-button"
         >
           {!selectedVariant && !options
-            ? "Select variant"
+            ? market.productCopy.selectVariant
             : !inStock || !isValidVariant
-            ? "Out of stock"
-            : "Add to cart"}
+            ? market.productCopy.outOfStock
+            : market.productCopy.addToCart}
         </Button>
         <MobileActions
           product={product}

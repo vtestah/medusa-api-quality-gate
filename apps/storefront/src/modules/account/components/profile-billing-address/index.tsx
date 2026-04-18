@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useActionState } from "react"
+import { useMarket } from "@lib/hooks/use-market"
 
 import Input from "@modules/common/components/input"
 import NativeSelect from "@modules/common/components/native-select"
@@ -18,6 +19,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
   customer,
   regions,
 }) => {
+  const market = useMarket()
   const regionOptions = useMemo(() => {
     return (
       regions
@@ -63,7 +65,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
 
   const currentInfo = useMemo(() => {
     if (!billingAddress) {
-      return "No billing address"
+      return market.code === "ru" ? "Платежный адрес не добавлен" : "No billing address"
     }
 
     const country =
@@ -87,13 +89,13 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
         <span>{country}</span>
       </div>
     )
-  }, [billingAddress, regionOptions])
+  }, [billingAddress, market.code, regionOptions])
 
   return (
     <form action={formAction} onReset={() => clearState()} className="w-full">
       <input type="hidden" name="addressId" value={billingAddress?.id} />
       <AccountInfo
-        label="Billing address"
+        label={market.code === "ru" ? "Платежный адрес" : "Billing address"}
         currentInfo={currentInfo}
         isSuccess={successState}
         isError={!!state.error}
@@ -103,14 +105,14 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
         <div className="grid grid-cols-1 gap-y-2">
           <div className="grid grid-cols-2 gap-x-2">
             <Input
-              label="First name"
+              label={market.code === "ru" ? "Имя" : "First name"}
               name="first_name"
               defaultValue={billingAddress?.first_name || undefined}
               required
               data-testid="billing-first-name-input"
             />
             <Input
-              label="Last name"
+              label={market.code === "ru" ? "Фамилия" : "Last name"}
               name="last_name"
               defaultValue={billingAddress?.last_name || undefined}
               required
@@ -118,13 +120,13 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
             />
           </div>
           <Input
-            label="Company"
+            label={market.code === "ru" ? "Компания" : "Company"}
             name="company"
             defaultValue={billingAddress?.company || undefined}
             data-testid="billing-company-input"
           />
           <Input
-            label="Phone"
+            label={market.code === "ru" ? "Телефон" : "Phone"}
             name="phone"
             type="phone"
             autoComplete="phone"
@@ -133,28 +135,32 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
             data-testid="billing-phone-input"
           />
           <Input
-            label="Address"
+            label={market.code === "ru" ? "Адрес" : "Address"}
             name="address_1"
             defaultValue={billingAddress?.address_1 || undefined}
             required
             data-testid="billing-address-1-input"
           />
           <Input
-            label="Apartment, suite, etc."
+            label={
+              market.code === "ru"
+                ? "Квартира, офис и т.д."
+                : "Apartment, suite, etc."
+            }
             name="address_2"
             defaultValue={billingAddress?.address_2 || undefined}
             data-testid="billing-address-2-input"
           />
           <div className="grid grid-cols-[144px_1fr] gap-x-2">
             <Input
-              label="Postal code"
+              label={market.code === "ru" ? "Индекс" : "Postal code"}
               name="postal_code"
               defaultValue={billingAddress?.postal_code || undefined}
               required
               data-testid="billing-postcal-code-input"
             />
             <Input
-              label="City"
+              label={market.code === "ru" ? "Город" : "City"}
               name="city"
               defaultValue={billingAddress?.city || undefined}
               required
@@ -162,7 +168,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
             />
           </div>
           <Input
-            label="Province"
+            label={market.code === "ru" ? "Регион" : "Province"}
             name="province"
             defaultValue={billingAddress?.province || undefined}
             data-testid="billing-province-input"

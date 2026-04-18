@@ -9,7 +9,9 @@ import {
 } from "@headlessui/react"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import ReactCountryFlag from "react-country-flag"
+import { useTranslations } from "next-intl"
 
+import { getMarketOptions } from "@lib/data/markets"
 import { StateType } from "@lib/hooks/use-toggle-state"
 import { useParams, usePathname } from "next/navigation"
 import { updateRegion } from "@lib/data/cart"
@@ -27,6 +29,7 @@ type CountrySelectProps = {
 }
 
 const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
+  const t = useTranslations("CountrySelect")
   const [current, setCurrent] = useState<
     | { country: string | undefined; region: string; label: string | undefined }
     | undefined
@@ -38,16 +41,19 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   const { state, close } = toggleState
 
   const options = useMemo(() => {
-    return regions
-      ?.map((r) => {
-        return r.countries?.map((c) => ({
-          country: c.iso_2,
-          region: r.id,
-          label: c.display_name,
-        }))
+    return getMarketOptions()
+      .map((market) => {
+        const region = regions.find((item) =>
+          item.countries?.some((country) => country.iso_2 === market.countryCode)
+        )
+
+        return {
+          country: market.countryCode,
+          region: region?.id ?? "",
+          label: market.marketLabel,
+        }
       })
-      .flat()
-      .sort((a, b) => (a?.label ?? "").localeCompare(b?.label ?? ""))
+      .filter((option) => option.region)
   }, [regions])
 
   useEffect(() => {
@@ -75,7 +81,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
       >
         <ListboxButton className="py-1 w-full">
           <div className="txt-compact-small flex items-start gap-x-2">
-            <span>Shipping to:</span>
+            <span>{`${t("market")}:`}</span>
             {current && (
               <span className="txt-compact-small flex items-center gap-x-2">
                 {/* @ts-ignore */}

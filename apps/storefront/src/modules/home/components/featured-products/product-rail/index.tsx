@@ -1,4 +1,5 @@
 import { listProducts } from "@lib/data/products"
+import { getMarketConfig } from "@lib/data/markets"
 import { HttpTypes } from "@medusajs/types"
 import { Text } from "@medusajs/ui"
 
@@ -12,6 +13,10 @@ export default async function ProductRail({
   collection: HttpTypes.StoreCollection
   region: HttpTypes.StoreRegion
 }) {
+  const market = getMarketConfig(
+    region.countries?.[0]?.iso_2?.toLowerCase() ?? undefined
+  )
+
   const {
     response: { products: pricedProducts },
   } = await listProducts({
@@ -31,7 +36,7 @@ export default async function ProductRail({
       <div className="flex justify-between mb-8">
         <Text className="txt-xlarge">{collection.title}</Text>
         <InteractiveLink href={`/collections/${collection.handle}`}>
-          View all
+          {market.productCopy.viewAll}
         </InteractiveLink>
       </div>
       <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-24 small:gap-y-36">

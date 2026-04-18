@@ -1,4 +1,5 @@
 import { Disclosure } from "@headlessui/react"
+import { useMarket } from "@lib/hooks/use-market"
 import { Badge, Button, clx } from "@medusajs/ui"
 import { useEffect } from "react"
 
@@ -26,6 +27,7 @@ const AccountInfo = ({
   children,
   'data-testid': dataTestid
 }: AccountInfoProps) => {
+  const market = useMarket()
   const { state, close, toggle } = useToggleState()
 
   const { pending } = useFormStatus()
@@ -63,7 +65,7 @@ const AccountInfo = ({
             data-testid="edit-button"
             data-active={state}
           >
-            {state ? "Cancel" : "Edit"}
+            {state ? market.uiCopy.cancel : market.uiCopy.edit}
           </Button>
         </div>
       </div>
@@ -82,7 +84,11 @@ const AccountInfo = ({
           data-testid="success-message"
         >
           <Badge className="p-2 my-4" color="green">
-            <span>{label} updated succesfully</span>
+            <span>
+              {market.code === "ru"
+                ? `Поле «${label}» обновлено`
+                : `${label} updated successfully`}
+            </span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -101,7 +107,12 @@ const AccountInfo = ({
           data-testid="error-message"
         >
           <Badge className="p-2 my-4" color="red">
-            <span>{errorMessage}</span>
+            <span>
+              {errorMessage === "An error occurred, please try again" &&
+              market.code === "ru"
+                ? "Что-то пошло не так. Попробуйте еще раз."
+                : errorMessage}
+            </span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -126,7 +137,7 @@ const AccountInfo = ({
                 type="submit"
                 data-testid="save-button"
               >
-                Save changes
+                {market.code === "ru" ? "Сохранить изменения" : "Save changes"}
               </Button>
             </div>
           </div>

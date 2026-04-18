@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test:
         [
@@ -99,7 +99,7 @@ services:
       MEDUSA_BACKEND_URL: http://medusa:9000
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${STOREFRONT_MEDUSA_PUBLISHABLE_KEY:-pk_test}
       NEXT_PUBLIC_BASE_URL: ${STOREFRONT_BASE_URL:-http://localhost:8000}
-      NEXT_PUBLIC_DEFAULT_REGION: ${STOREFRONT_DEFAULT_REGION:-gb}
+      NEXT_PUBLIC_DEFAULT_REGION: ${STOREFRONT_DEFAULT_REGION:-ru}
       REVALIDATE_SECRET: ${STOREFRONT_REVALIDATE_SECRET:-supersecret}
     ports:
       - "8000:8000"
@@ -109,7 +109,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "fetch('http://127.0.0.1:8000/gb', { redirect: 'manual' }).then((response) => process.exit(response.status < 400 ? 0 : 1)).catch(() => process.exit(1))",
+          "fetch('http://127.0.0.1:8000/ru', { redirect: 'manual' }).then((response) => process.exit(response.status < 400 ? 0 : 1)).catch(() => process.exit(1))",
         ]
       interval: 10s
       timeout: 5s

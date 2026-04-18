@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useActionState } from "react";
+import { useMarket } from "@lib/hooks/use-market"
 
 import Input from "@modules/common/components/input"
 
@@ -13,6 +14,7 @@ type MyInformationProps = {
 }
 
 const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
+  const market = useMarket()
   const [successState, setSuccessState] = React.useState(false)
 
   // TODO: It seems we don't support updating emails now?
@@ -48,7 +50,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
   return (
     <form action={formAction} className="w-full">
       <AccountInfo
-        label="Email"
+        label={market.code === "ru" ? "Email" : "Email"}
         currentInfo={`${customer.email}`}
         isSuccess={successState}
         isError={!!state.error}
@@ -58,7 +60,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
       >
         <div className="grid grid-cols-1 gap-y-2">
           <Input
-            label="Email"
+            label={market.code === "ru" ? "Email" : "Email"}
             name="email"
             type="email"
             autoComplete="email"

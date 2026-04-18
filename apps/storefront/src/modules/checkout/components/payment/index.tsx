@@ -1,8 +1,9 @@
 "use client"
 
 import { RadioGroup } from "@headlessui/react"
-import { isStripeLike, paymentInfoMap } from "@lib/constants"
+import { getPaymentInfoMap, isStripeLike } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
+import { useMarket } from "@lib/hooks/use-market"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -20,6 +21,8 @@ const Payment = ({
   cart: any
   availablePaymentMethods: any[]
 }) => {
+  const market = useMarket()
+  const paymentInfoMap = getPaymentInfoMap({ countryCode: market.countryCode })
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
   )
@@ -31,6 +34,15 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
+  const activeProviderId = activeSession?.provider_id
+    ? String(activeSession.provider_id)
+    : ""
+  const selectedPaymentInfo = selectedPaymentMethod
+    ? paymentInfoMap[String(selectedPaymentMethod)]
+    : undefined
+  const activePaymentInfo = activeProviderId
+    ? paymentInfoMap[activeProviderId]
+    : undefined
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -117,7 +129,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          {market.checkoutCopy.payment}
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
         {!isOpen && paymentReady && (
@@ -127,7 +139,7 @@ const Payment = ({
               className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="edit-payment-button"
             >
-              Edit
+              {market.checkoutCopy.edit}
             </button>
           </Text>
         )}
@@ -167,13 +179,13 @@ const Payment = ({
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                {market.checkoutCopy.paymentMethod}
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {market.checkoutCopy.giftCard}
               </Text>
             </div>
           )}
@@ -195,8 +207,8 @@ const Payment = ({
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
+              ? market.checkoutCopy.cardDetails
+              : market.checkoutCopy.continueToReview}
           </Button>
         </div>
 
@@ -205,33 +217,30 @@ const Payment = ({
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment method
+                  {market.checkoutCopy.paymentMethod}
                 </Text>
                 <Text
                   className="txt-medium text-ui-fg-subtle"
                   data-testid="payment-method-summary"
                 >
-                  {paymentInfoMap[activeSession?.provider_id]?.title ||
-                    activeSession?.provider_id}
+                  {activePaymentInfo?.title || activeProviderId}
                 </Text>
               </div>
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment details
+                  {market.checkoutCopy.paymentDetails}
                 </Text>
                 <div
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
                   data-testid="payment-details-summary"
                 >
                   <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
-                    {paymentInfoMap[selectedPaymentMethod]?.icon || (
-                      <CreditCard />
-                    )}
+                    {selectedPaymentInfo?.icon || <CreditCard />}
                   </Container>
                   <Text>
                     {isStripeLike(selectedPaymentMethod) && cardBrand
                       ? cardBrand
-                      : "Another step will appear"}
+                      : market.checkoutCopy.cardStepHint}
                   </Text>
                 </div>
               </div>
@@ -239,13 +248,13 @@ const Payment = ({
           ) : paidByGiftcard ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                {market.checkoutCopy.paymentMethod}
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {market.checkoutCopy.giftCard}
               </Text>
             </div>
           ) : null}

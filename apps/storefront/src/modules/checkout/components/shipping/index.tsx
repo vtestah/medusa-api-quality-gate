@@ -3,6 +3,7 @@
 import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
+import { useMarket } from "@lib/hooks/use-market"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -51,6 +52,7 @@ const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
 }) => {
+  const market = useMarket()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
@@ -70,11 +72,13 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
-  const _shippingMethods = availableShippingMethods?.filter(
+  const normalizedShippingMethods = (availableShippingMethods ?? []) as any[]
+
+  const _shippingMethods = normalizedShippingMethods.filter(
     (sm) => sm.service_zone?.fulfillment_set?.type !== "pickup"
   )
 
-  const _pickupMethods = availableShippingMethods?.filter(
+  const _pickupMethods = normalizedShippingMethods.filter(
     (sm) => sm.service_zone?.fulfillment_set?.type === "pickup"
   )
 
@@ -161,7 +165,7 @@ const Shipping: React.FC<ShippingProps> = ({
             }
           )}
         >
-          Delivery
+          {market.checkoutCopy.delivery}
           {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
             <CheckCircleSolid />
           )}
@@ -176,7 +180,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
                 data-testid="edit-delivery-button"
               >
-                Edit
+                {market.checkoutCopy.edit}
               </button>
             </Text>
           )}
@@ -186,10 +190,10 @@ const Shipping: React.FC<ShippingProps> = ({
           <div className="grid">
             <div className="flex flex-col">
               <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
+                {market.checkoutCopy.shippingMethod}
               </span>
               <span className="mb-4 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
+                {market.checkoutCopy.shippingMethodHint}
               </span>
             </div>
             <div data-testid="delivery-options-container">
@@ -223,7 +227,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           checked={showPickupOptions === PICKUP_OPTION_ON}
                         />
                         <span className="text-base-regular">
-                          Pick up your order
+                          {market.checkoutCopy.pickup}
                         </span>
                       </div>
                       <span className="justify-self-end text-ui-fg-base">
@@ -299,10 +303,12 @@ const Shipping: React.FC<ShippingProps> = ({
             <div className="grid">
               <div className="flex flex-col">
                 <span className="font-medium txt-medium text-ui-fg-base">
-                  Store
+                  {market.code === "ru" ? "Пункт выдачи" : "Store"}
                 </span>
                 <span className="mb-4 text-ui-fg-muted txt-medium">
-                  Choose a store near you
+                  {market.code === "ru"
+                    ? "Выберите ближайшую точку самовывоза"
+                    : "Choose a store near you"}
                 </span>
               </div>
               <div data-testid="delivery-options-container">
@@ -376,7 +382,7 @@ const Shipping: React.FC<ShippingProps> = ({
               disabled={!cart.shipping_methods?.[0]}
               data-testid="submit-delivery-option-button"
             >
-              Continue to payment
+              {market.checkoutCopy.continueToPayment}
             </Button>
           </div>
         </>
@@ -386,7 +392,7 @@ const Shipping: React.FC<ShippingProps> = ({
             {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Method
+                  {market.code === "ru" ? "Способ" : "Method"}
                 </Text>
                 <Text className="txt-medium text-ui-fg-subtle">
                   {cart.shipping_methods!.at(-1)!.name}{" "}

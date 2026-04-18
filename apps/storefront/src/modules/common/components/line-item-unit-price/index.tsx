@@ -1,3 +1,4 @@
+import { getMarketConfigByCurrency } from "@lib/data/markets"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
@@ -13,7 +14,9 @@ const LineItemUnitPrice = ({
   style = "default",
   currencyCode,
 }: LineItemUnitPriceProps) => {
-  const { total, original_total } = item
+  const market = getMarketConfigByCurrency(currencyCode)
+  const total = item.total ?? 0
+  const original_total = item.original_total ?? total
   const hasReducedPrice = total < original_total
 
   const percentage_diff = Math.round(
@@ -26,7 +29,7 @@ const LineItemUnitPrice = ({
         <>
           <p>
             {style === "default" && (
-              <span className="text-ui-fg-muted">Original: </span>
+              <span className="text-ui-fg-muted">{market.uiCopy.original}: </span>
             )}
             <span
               className="line-through"

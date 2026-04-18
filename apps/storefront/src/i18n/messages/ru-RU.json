@@ -1,0 +1,210 @@
+{
+  "Hero": {
+    "eyebrow": "Российский рынок",
+    "title": "{brand}: базовый гардероб без лишнего шума",
+    "subtitle": "Лаконичные повседневные вещи с понятной посадкой, быстрым fulfillment и ценами в рублях.",
+    "primaryCta": "Смотреть каталог"
+  },
+  "Nav": {
+    "account": "Аккаунт",
+    "cart": "Корзина"
+  },
+  "SideMenu": {
+    "menu": "Меню",
+    "home": "Главная",
+    "store": "Каталог",
+    "account": "Аккаунт",
+    "cart": "Корзина",
+    "rightsReserved": "Все права защищены."
+  },
+  "Footer": {
+    "categories": "Категории",
+    "collections": "Коллекции",
+    "engineering": "Инжиниринг",
+    "github": "GitHub",
+    "documentation": "Документация",
+    "sourceCode": "Исходный код",
+    "rightsReserved": "Все права защищены.",
+    "builtWith": "Собрано на"
+  },
+  "Store": {
+    "allProducts": "Все товары",
+    "sortBy": "Сортировка",
+    "latestArrivals": "Новые поступления",
+    "priceLowToHigh": "Цена: по возрастанию",
+    "priceHighToLow": "Цена: по убыванию"
+  },
+  "Cart": {
+    "title": "Корзина",
+    "summary": "Сводка",
+    "goToCheckout": "Перейти к оформлению",
+    "signInPromptTitle": "Уже есть аккаунт?",
+    "signInPromptBody": "Войдите, чтобы ускорить оформление заказа и использовать сохраненные адреса.",
+    "signIn": "Войти",
+    "emptyTitle": "Корзина пуста",
+    "emptyBody": "Добавьте товары из каталога Basis, чтобы начать оформление заказа.",
+    "emptyCta": "Перейти в каталог",
+    "item": "Товар",
+    "quantity": "Количество",
+    "price": "Цена",
+    "total": "Итого",
+    "subtotal": "Подытог",
+    "shipping": "Доставка",
+    "discount": "Скидка",
+    "taxes": "Налоги",
+    "subtotalWithHint": "Подытог (без доставки и налогов)",
+    "goToCart": "Перейти в корзину",
+    "cartEmpty": "Корзина пуста.",
+    "exploreProducts": "Смотреть товары",
+    "remove": "Удалить"
+  },
+  "Checkout": {
+    "backToCart": "Назад в корзину",
+    "backShort": "Назад",
+    "address": "Адрес",
+    "billingAddress": "Платежный адрес",
+    "sameAsBilling": "Совпадает с платежным адресом",
+    "contact": "Контакты",
+    "delivery": "Доставка",
+    "edit": "Изменить",
+    "continueToDelivery": "Продолжить к доставке",
+    "continueToPayment": "Продолжить к оплате",
+    "continueToReview": "Продолжить к проверке",
+    "payment": "Оплата",
+    "paymentMethod": "Способ оплаты",
+    "paymentDetails": "Детали оплаты",
+    "cardDetails": "Данные карты",
+    "cardStepHint": "Данные карты будут запрошены на следующем шаге",
+    "choosePaymentMethod": "Выберите способ оплаты",
+    "placeOrder": "Оформить заказ",
+    "review": "Проверка заказа",
+    "reviewDisclaimer": "Проверьте детали заказа перед подтверждением. После оформления вы получите письмо с подтверждением.",
+    "shippingMethod": "Способ доставки",
+    "shippingMethodHint": "Выберите подходящий способ доставки для вашего заказа.",
+    "pickup": "Самовывоз",
+    "giftCard": "Подарочная карта"
+  },
+  "CheckoutSummary": {
+    "inYourCart": "В вашей корзине"
+  },
+  "CountrySelect": {
+    "market": "Рынок"
+  },
+  "AccountNav": {
+    "account": "Аккаунт",
+    "hello": "Привет,",
+    "overview": "Обзор",
+    "profile": "Профиль",
+    "addresses": "Адреса",
+    "orders": "Заказы",
+    "logout": "Выйти"
+  },
+  "AccountOverview": {
+    "signedInAs": "Вы вошли как",
+    "completed": "заполнено",
+    "saved": "сохранено",
+    "recentOrders": "Последние заказы",
+    "datePlaced": "Дата оформления",
+    "orderNumber": "Номер заказа",
+    "totalAmount": "Сумма",
+    "noRecentOrders": "У вас пока нет заказов.",
+    "goToOrder": "Перейти к заказу #{displayId}"
+  },
+  "AccountLogin": {
+    "welcomeBack": "С возвращением",
+    "subtitle": "Войдите, чтобы управлять заказами, адресами и возвратами в {brand}.",
+    "emailLabel": "Электронная почта",
+    "emailTitle": "Введите корректный email.",
+    "passwordLabel": "Пароль",
+    "signIn": "Войти",
+    "notMember": "Еще не зарегистрированы?",
+    "joinUs": "Создать аккаунт"
+  },
+  "AccountRegister": {
+    "memberTitle": "Стать клиентом Basis",
+    "memberSubtitle": "Создайте аккаунт, чтобы сохранять адреса, отслеживать заказы и быстрее оформлять покупки.",
+    "firstNameLabel": "Имя",
+    "lastNameLabel": "Фамилия",
+    "emailLabel": "Электронная почта",
+    "phoneLabel": "Телефон",
+    "passwordLabel": "Пароль",
+    "accountAgreementPrefix": "Создавая аккаунт, вы принимаете",
+    "privacyPolicy": "политику конфиденциальности",
+    "and": "и",
+    "termsOfUse": "условия использования",
+    "joinUs": "Создать аккаунт",
+    "alreadyMember": "Уже зарегистрированы?",
+    "signIn": "Войти"
+  },
+  "AccountLayout": {
+    "supportTitle": "Есть вопросы?",
+    "supportBody": "Частые вопросы и ответы собраны на странице клиентского сервиса Basis.",
+    "customerService": "Клиентский сервис"
+  },
+  "CommonUI": {
+    "original": "Исходная цена",
+    "edit": "Изменить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "remove": "Удалить",
+    "saveChanges": "Сохранить изменения",
+    "updated": "Поле «{label}» обновлено",
+    "genericError": "Что-то пошло не так. Попробуйте еще раз."
+  },
+  "Order": {
+    "thankYou": "Спасибо за заказ",
+    "orderPlaced": "Заказ оформлен",
+    "summary": "Сводка заказа",
+    "orderDetails": "Детали заказа",
+    "backToOverview": "Назад к списку заказов",
+    "orderSummary": "Сводка заказа",
+    "confirmationSent": "Подтверждение отправлено на",
+    "orderDate": "Дата заказа",
+    "orderNumber": "Номер заказа",
+    "orderStatus": "Статус заказа",
+    "paymentStatus": "Статус оплаты",
+    "needHelp": "Нужна помощь?",
+    "contact": "Связаться с нами",
+    "returnsExchanges": "Возвраты и обмены",
+    "itemSingle": "товар",
+    "itemPlural": "товаров",
+    "moreItems": "еще товаров",
+    "seeDetails": "Смотреть детали",
+    "paidAt": "оплачено"
+  },
+  "AccountPages": {
+    "profileHeading": "Профиль",
+    "profileDescription": "Управляйте контактными данными и платежной информацией для заказов Basis.",
+    "ordersHeading": "Заказы",
+    "ordersDescription": "Проверяйте предыдущие заказы и их статус. При необходимости вы сможете инициировать возврат или обмен.",
+    "addressesHeading": "Адреса доставки",
+    "addressesDescription": "Просматривайте и обновляйте адреса доставки. Сохраненные адреса будут доступны во время оформления заказа."
+  },
+  "Metadata": {
+    "homeTitle": "{brand} | Российский storefront demo",
+    "homeDescription": "Russian-first dual-market storefront demo на Medusa и Next.js.",
+    "cartTitle": "Корзина | {brand}",
+    "cartDescription": "Проверьте товары, суммы и параметры оформления заказа в корзине {brand}.",
+    "checkoutTitle": "Оформление заказа | {brand}",
+    "signInTitle": "Вход | {brand}",
+    "signInDescription": "Войдите в аккаунт {brand}, чтобы управлять заказами, адресами и возвратами.",
+    "accountTitle": "Аккаунт | {brand}",
+    "accountDescription": "Обзор аккаунта {brand}: профиль, адреса и последние заказы.",
+    "profileTitle": "Профиль | {brand}",
+    "profileDescription": "Обновляйте профиль и платежную информацию в аккаунте {brand}.",
+    "storeTitle": "Каталог | {brand}",
+    "storeDescription": "Откройте весь каталог Basis.",
+    "ordersTitle": "Заказы | {brand}",
+    "ordersDescription": "История заказов и статусы доставки в аккаунте {brand}.",
+    "addressesTitle": "Адреса | {brand}",
+    "addressesDescription": "Управляйте сохраненными адресами доставки в аккаунте {brand}."
+  },
+  "Products": {
+    "relatedProducts": "Похожие товары",
+    "relatedProductsDescription": "Вам также могут понравиться эти товары.",
+    "from": "От",
+    "select": "Выбрать {title}",
+    "selectOptions": "Выбрать опции",
+    "selectVariant": "Выбрать вариант"
+  }
+}

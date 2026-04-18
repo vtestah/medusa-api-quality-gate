@@ -12,6 +12,9 @@ const CountrySelect = forwardRef<
   }
 >(({ placeholder = "Country", region, defaultValue, ...props }, ref) => {
   const innerRef = useRef<HTMLSelectElement>(null)
+  const resolvedPlaceholder = region?.countries?.some((country) => country.iso_2 === "ru")
+    ? "Страна"
+    : placeholder
 
   useImperativeHandle<HTMLSelectElement | null, HTMLSelectElement | null>(
     ref,
@@ -32,7 +35,7 @@ const CountrySelect = forwardRef<
   return (
     <NativeSelect
       ref={innerRef}
-      placeholder={placeholder}
+      placeholder={resolvedPlaceholder}
       defaultValue={defaultValue}
       {...props}
     >
