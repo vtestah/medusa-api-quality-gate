@@ -1,6 +1,12 @@
 import { getBaseURL } from "@lib/util/env"
 import { Metadata } from "next"
 import "styles/globals.css"
+import { Plus_Jakarta_Sans } from "next/font/google"
+
+const plusJakarta = Plus_Jakarta_Sans({ 
+  subsets: ["latin", "cyrillic-ext"],
+  variable: "--font-plus-jakarta"
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -8,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light">
+    <html lang="en" data-mode="light" className={plusJakarta.variable}>
       <body>
         <main className="relative">{props.children}</main>
       </body>

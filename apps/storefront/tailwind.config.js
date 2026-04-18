@@ -60,7 +60,7 @@ module.exports = {
       },
       fontFamily: {
         sans: [
-          "Inter",
+          "var(--font-plus-jakarta)",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
