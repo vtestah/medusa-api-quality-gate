@@ -27,8 +27,8 @@ const StoreTemplate = async ({
     >
       <RefinementList sortBy={sort} />
       <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">{t("Store.allProducts")}</h1>
+        <div className="mb-8 pb-4 border-b border-ui-border-base">
+          <h1 data-testid="store-page-title" className="text-3xl font-medium tracking-tight">{t("Store.allProducts")}</h1>
         </div>
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts

@@ -16,13 +16,13 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
   const t = await getTranslator(countryCode)
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
+    <footer className="border-t border-gray-800 w-full bg-gray-900 text-gray-300">
       <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
+        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-16">
           <div>
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+              className="txt-compact-xlarge-plus text-white hover:text-gray-300 uppercase"
             >
               {market.brandName}
             </LocalizedClientLink>
@@ -30,7 +30,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
           <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {productCategories && productCategories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
+                <span className="txt-small-plus text-white font-semibold">
                   {t("Footer.categories")}
                 </span>
                 <ul
@@ -51,12 +51,12 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
 
                     return (
                       <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
+                        className="flex flex-col gap-2 text-gray-400 txt-small"
                         key={c.id}
                       >
                         <LocalizedClientLink
                           className={clx(
-                            "hover:text-ui-fg-base",
+                            "hover:text-white transition-colors duration-200",
                             children && "txt-small-plus"
                           )}
                           href={`/categories/${c.handle}`}
@@ -70,7 +70,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
                               children.map((child) => (
                                 <li key={child.id}>
                                   <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
+                                    className="hover:text-white transition-colors duration-200"
                                     href={`/categories/${child.handle}`}
                                     data-testid="category-link"
                                   >
@@ -88,12 +88,12 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
             )}
             {collections && collections.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
+                <span className="txt-small-plus text-white font-semibold">
                   {t("Footer.collections")}
                 </span>
                 <ul
                   className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
+                    "grid grid-cols-1 gap-2 text-gray-400 txt-small",
                     {
                       "grid-cols-2": (collections?.length || 0) > 3,
                     }
@@ -102,7 +102,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
                       <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
+                        className="hover:text-white transition-colors duration-200"
                         href={`/collections/${c.handle}`}
                       >
                         {c.title}
@@ -113,16 +113,16 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">
+              <span className="txt-small-plus text-white font-semibold">
                 {t("Footer.engineering")}
               </span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
+              <ul className="grid grid-cols-1 gap-y-2 text-gray-400 txt-small">
                 <li>
                   <a
                     href="https://github.com/medusajs"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="hover:text-white transition-colors duration-200"
                   >
                     {t("Footer.github")}
                   </a>
@@ -132,7 +132,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
                     href="https://docs.medusajs.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="hover:text-white transition-colors duration-200"
                   >
                     {t("Footer.documentation")}
                   </a>
@@ -142,7 +142,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
                     href="https://github.com/medusajs/nextjs-starter-medusa"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="hover:text-white transition-colors duration-200"
                   >
                     {t("Footer.sourceCode")}
                   </a>
@@ -151,7 +151,7 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
             </div>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
+        <div className="flex w-full mb-16 justify-between text-gray-500">
           <Text className="txt-compact-small">
             © {new Date().getFullYear()} {market.brandName}.{" "}
             {t("Footer.rightsReserved")}
