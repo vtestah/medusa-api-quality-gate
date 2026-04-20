@@ -8,6 +8,11 @@
     "docker:logs:storefront": "docker compose logs -f storefront",
     "docker:seed-demo": "docker compose exec -T medusa pnpm seed && pnpm docker:sync-key && docker compose up -d storefront",
     "docker:sync-key": "./scripts/sync-publishable-key.sh",
+    "quality-gate:venv": "python3 -m venv .venv",
+    "quality-gate:install": ".venv/bin/python -m pip install -e './quality-gate[dev]'",
+    "quality-gate:test": ".venv/bin/python -m pytest quality-gate/tests -q",
+    "quality-gate:test:smoke": ".venv/bin/python -m pytest quality-gate/tests/smoke -q",
+    "quality-gate:test:localization": ".venv/bin/python -m pytest quality-gate/tests/localization -q",
     "storefront:dev": "pnpm --dir apps/storefront dev",
     "storefront:lint": "pnpm --dir apps/storefront lint"
   },

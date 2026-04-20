@@ -16,6 +16,7 @@ Public portfolio repository for a Senior SDET track focused on API quality gates
 ecom-quality-gate/
 ├── package.json         # Root scripts for Docker runtime
 ├── pnpm-workspace.yaml  # Monorepo policy for all JS apps
+├── quality-gate/        # Python pytest framework for API quality gates
 ├── apps/
 │   ├── medusa/          # System under test: Medusa backend
 │   └── storefront/      # Next.js target UI for future browser automation
@@ -77,6 +78,44 @@ Runtime proof points:
 - Medusa admin: `http://localhost:9000/app`
 - PostgreSQL host access: `localhost:5433`
 
+## Python Quality Gate
+
+Python API automation now lives in `quality-gate/` and targets the live Medusa runtime from this repository.
+
+Structure:
+
+```text
+quality-gate/
+├── pyproject.toml
+├── src/quality_gate/
+│   ├── clients/   # Health, regions, products, categories
+│   ├── models/    # Pydantic contracts
+│   ├── db/        # PostgreSQL helpers
+│   └── config.py
+└── tests/
+    ├── smoke/
+    ├── localization/
+    └── db/
+```
+
+Quick commands:
+
+```bash
+pnpm quality-gate:venv
+```
+
+```bash
+pnpm quality-gate:install
+```
+
+```bash
+pnpm quality-gate:test:smoke
+```
+
+```bash
+pnpm quality-gate:test:localization
+```
+
 ## Quick Start
 
 ```bash
@@ -89,6 +128,12 @@ pnpm docker:seed-demo
 
 ```bash
 curl http://localhost:9000/health
+```
+
+```bash
+pnpm quality-gate:venv
+pnpm quality-gate:install
+pnpm quality-gate:test:smoke
 ```
 
 ```bash
@@ -205,7 +250,8 @@ This is the backend analogue of testing a real frontend app with the correct sto
 
 ## Next Modules
 
-- Python `quality-gate` package with `clients`, `models`, `fixtures`, and `tests`
-- Pydantic v2 contract validation for Medusa Store and Admin APIs
-- DB verification helpers for cross-layer assertions
-- Playwright UI checks against the localized storefront once the API layer is locked
+- Expand the Python `quality-gate` package from Store API smoke checks to richer contract coverage
+- Add publishable-key edge cases and Store API negative scenarios
+- Add DB verification helpers for richer cross-layer assertions
+- Add Admin API and auth-heavy flows only after the course reaches those concepts
+- Add Playwright UI checks against the localized storefront once the API layer is locked
