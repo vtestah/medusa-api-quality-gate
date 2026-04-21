@@ -133,6 +133,7 @@ curl http://localhost:9000/health
 ```bash
 pnpm quality-gate:venv
 pnpm quality-gate:install
+pnpm quality-gate:doctor
 pnpm quality-gate:test:smoke
 ```
 

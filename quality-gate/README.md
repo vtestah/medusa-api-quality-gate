@@ -20,6 +20,10 @@ python3 -m venv .venv
 ```
 
 ```bash
+.venv/bin/python -m quality_gate.doctor
+```
+
+```bash
 .venv/bin/python -m pytest quality-gate/tests/smoke -q
 ```
 
