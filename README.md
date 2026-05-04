@@ -105,6 +105,14 @@ pnpm quality-gate:venv
 ```
 
 ```bash
+pnpm quality-gate:bootstrap-status
+```
+
+```bash
+pnpm quality-gate:bootstrap-status:venv
+```
+
+```bash
 pnpm quality-gate:install
 ```
 
@@ -132,6 +140,8 @@ curl http://localhost:9000/health
 
 ```bash
 pnpm quality-gate:venv
+pnpm quality-gate:bootstrap-status
+pnpm quality-gate:bootstrap-status:venv
 pnpm quality-gate:install
 pnpm quality-gate:doctor
 pnpm quality-gate:test:smoke

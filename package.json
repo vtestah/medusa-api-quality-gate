@@ -9,6 +9,8 @@
     "docker:seed-demo": "docker compose exec -T medusa pnpm seed && pnpm docker:sync-key && docker compose up -d storefront",
     "docker:sync-key": "./scripts/sync-publishable-key.sh",
     "quality-gate:venv": "python3 -m venv .venv",
+    "quality-gate:bootstrap-status": "PYTHONPATH=quality-gate/src python3 -m quality_gate.bootstrap",
+    "quality-gate:bootstrap-status:venv": "PYTHONPATH=quality-gate/src .venv/bin/python -m quality_gate.bootstrap",
     "quality-gate:install": ".venv/bin/python -m pip install -e './quality-gate[dev]'",
     "quality-gate:doctor": ".venv/bin/python -m quality_gate.doctor",
     "quality-gate:test": ".venv/bin/python -m pytest quality-gate/tests -q",

@@ -16,6 +16,14 @@ python3 -m venv .venv
 ```
 
 ```bash
+PYTHONPATH=quality-gate/src python3 -m quality_gate.bootstrap
+```
+
+```bash
+.venv/bin/python -m quality_gate.bootstrap
+```
+
+```bash
 .venv/bin/python -m pip install -e './quality-gate[dev]'
 ```
 
