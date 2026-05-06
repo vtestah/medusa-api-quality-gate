@@ -30,6 +30,7 @@ markers = [
   "contract: контрактная валидация API-ответов",
   "localization: проверки локализации и x-medusa-locale",
   "db: state verification через PostgreSQL",
+  "bootstrap: проверки локального Python bootstrap и окружения",
 ]
 
 [tool.setuptools.packages.find]

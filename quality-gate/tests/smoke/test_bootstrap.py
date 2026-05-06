@@ -2,7 +2,11 @@
 
 from pathlib import Path
 
+import pytest
+
 from quality_gate.bootstrap import collect_bootstrap_snapshot
+
+pytestmark = [pytest.mark.smoke, pytest.mark.bootstrap]
 
 
 def test_bootstrap_snapshot_matches_project_venv_when_expected_python_is_active(

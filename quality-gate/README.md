@@ -43,6 +43,28 @@ PYTHONPATH=quality-gate/src python3 -m quality_gate.bootstrap
 .venv/bin/python -m pytest quality-gate/tests --alluredir quality-gate/allure-results
 ```
 
+## Выборочный запуск по маркерам
+
+```bash
+.venv/bin/python -m pytest --collect-only quality-gate/tests -m smoke -q
+```
+
+```bash
+.venv/bin/python -m pytest --collect-only quality-gate/tests -m "smoke and contract" -q
+```
+
+```bash
+.venv/bin/python -m pytest --collect-only quality-gate/tests -m "smoke or db" -q
+```
+
+```bash
+.venv/bin/python -m pytest --collect-only quality-gate/tests -m "not db" -q
+```
+
+```bash
+.venv/bin/python -m pytest --markers quality-gate/tests
+```
+
 ## Поддерживаемые переменные окружения
 
 - `QUALITY_GATE_MEDUSA_BASE_URL`

@@ -1,6 +1,10 @@
 """Smoke checks for the local Python bootstrap."""
 
+import pytest
+
 from quality_gate.doctor import collect_environment_snapshot
+
+pytestmark = [pytest.mark.smoke, pytest.mark.bootstrap]
 
 
 def test_doctor_snapshot_contains_python_bootstrap_details() -> None:
