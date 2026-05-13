@@ -3,6 +3,12 @@
 import pytest
 import requests
 
+from quality_gate.clients import (
+    HealthClient,
+    StoreCategoriesClient,
+    StoreProductsClient,
+    StoreRegionsClient,
+)
 from quality_gate.config import Settings
 from quality_gate.db import PostgresDb
 
@@ -29,6 +35,46 @@ def store_headers(settings: Settings) -> dict[str, str]:
     """Headers for Medusa Store API requests."""
 
     return settings.store_headers
+
+
+@pytest.fixture(scope="module")
+def health_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> HealthClient:
+    """Reusable health client for module-level tests."""
+
+    return HealthClient(api_session, settings)
+
+
+@pytest.fixture(scope="module")
+def store_regions_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> StoreRegionsClient:
+    """Reusable store regions client for module-level tests."""
+
+    return StoreRegionsClient(api_session, settings)
+
+
+@pytest.fixture(scope="module")
+def store_products_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> StoreProductsClient:
+    """Reusable store products client for module-level tests."""
+
+    return StoreProductsClient(api_session, settings)
+
+
+@pytest.fixture(scope="module")
+def store_categories_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> StoreCategoriesClient:
+    """Reusable store categories client for module-level tests."""
+
+    return StoreCategoriesClient(api_session, settings)
 
 
 @pytest.fixture(scope="session")

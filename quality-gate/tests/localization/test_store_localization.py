@@ -3,7 +3,6 @@
 import re
 
 import pytest
-import requests
 
 from quality_gate.clients import StoreCategoriesClient, StoreProductsClient
 from quality_gate.config import Settings
@@ -21,13 +20,12 @@ def contains_cyrillic(value: str | None) -> bool:
 @pytest.mark.contract
 def test_store_products_return_russian_copy_for_ru_locale(
     runtime_ready: None,
-    api_session: requests.Session,
+    store_products_client: StoreProductsClient,
     settings: Settings,
 ) -> None:
     """Localized product fields should be returned in Russian for ru-RU."""
 
-    client = StoreProductsClient(api_session, settings)
-    payload = client.list_products(
+    payload = store_products_client.list_products(
         handle=settings.demo_product_handle,
         locale=settings.default_locale,
         fields="title,description,handle,material",
@@ -46,13 +44,12 @@ def test_store_products_return_russian_copy_for_ru_locale(
 @pytest.mark.contract
 def test_store_categories_return_russian_category_name_for_ru_locale(
     runtime_ready: None,
-    api_session: requests.Session,
+    store_categories_client: StoreCategoriesClient,
     settings: Settings,
 ) -> None:
     """Localized category fields should be returned in Russian for ru-RU."""
 
-    client = StoreCategoriesClient(api_session, settings)
-    payload = client.list_categories(
+    payload = store_categories_client.list_categories(
         handle=settings.demo_category_handle,
         locale=settings.default_locale,
         fields="name,description,handle",
