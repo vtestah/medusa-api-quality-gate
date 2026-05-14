@@ -14,6 +14,7 @@
     "quality-gate:install": ".venv/bin/python -m pip install -e './quality-gate[dev]'",
     "quality-gate:doctor": ".venv/bin/python -m quality_gate.doctor",
     "quality-gate:test": ".venv/bin/python -m pytest quality-gate/tests -q",
+    "quality-gate:test:html": "mkdir -p quality-gate/reports && .venv/bin/python -m pytest quality-gate/tests/smoke --html=quality-gate/reports/smoke-report.html --self-contained-html -q",
     "quality-gate:test:smoke": ".venv/bin/python -m pytest quality-gate/tests/smoke -q",
     "quality-gate:test:localization": ".venv/bin/python -m pytest quality-gate/tests/localization -q",
     "storefront:dev": "pnpm --dir apps/storefront dev",

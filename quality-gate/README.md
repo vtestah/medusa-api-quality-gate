@@ -7,6 +7,7 @@ Python-пакет для API automation вокруг локального `Medus
 - `requests.Session` как транспорт
 - `Pydantic v2` для контрактной валидации
 - `pytest` для smoke, contract, localization и DB checks
+- `pytest-html` для локального one-file HTML отчета
 - `psycopg` для PostgreSQL state verification
 
 ## Быстрый старт
@@ -33,6 +34,14 @@ PYTHONPATH=quality-gate/src python3 -m quality_gate.bootstrap
 
 ```bash
 .venv/bin/python -m pytest quality-gate/tests/smoke -q
+```
+
+```bash
+mkdir -p quality-gate/reports
+.venv/bin/python -m pytest quality-gate/tests/smoke \
+  --html=quality-gate/reports/smoke-report.html \
+  --self-contained-html \
+  -q
 ```
 
 ```bash
@@ -64,6 +73,24 @@ PYTHONPATH=quality-gate/src python3 -m quality_gate.bootstrap
 ```bash
 .venv/bin/python -m pytest --markers quality-gate/tests
 ```
+
+## HTML отчет pytest
+
+Локальный HTML отчет удобен для быстрой демонстрации результата smoke-прогона без чтения полного терминального лога.
+
+```bash
+cd ecom-quality-gate
+pnpm quality-gate:install
+pnpm quality-gate:test:html
+```
+
+Отчет создается как один файл:
+
+```text
+quality-gate/reports/smoke-report.html
+```
+
+Флаг `--self-contained-html` встраивает стили в сам отчет, поэтому файл проще отправить или прикрепить к CI artifact.
 
 ## Поддерживаемые переменные окружения
 
