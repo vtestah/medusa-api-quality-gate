@@ -10,6 +10,29 @@ Python-пакет для API automation вокруг локального `Medus
 - `pytest-html` для локального one-file HTML отчета
 - `psycopg` для PostgreSQL state verification
 
+## Структура проекта
+
+```text
+quality-gate/
+├── pyproject.toml          # package metadata, dependencies, pytest config
+├── README.md
+├── src/
+│   └── quality_gate/       # reusable framework code imported by tests
+│       ├── clients/        # HTTP clients for Health and Medusa Store API
+│       ├── models/         # Pydantic response contracts
+│       ├── db/             # read-only PostgreSQL helpers
+│       ├── config.py       # env-based Settings
+│       ├── bootstrap.py    # local venv/bootstrap diagnostics
+│       └── doctor.py       # active Python/runtime snapshot
+└── tests/
+    ├── smoke/              # fast runtime and bootstrap checks
+    ├── localization/       # x-medusa-locale contract checks
+    └── db/                 # PostgreSQL state verification
+```
+
+Framework code belongs in `src/quality_gate/`; executable checks belong in `tests/`.
+One-off learning snippets belong in `notes/lessons/`, not in production test code.
+
 ## Быстрый старт
 
 ```bash
