@@ -30,6 +30,22 @@ class BaseApiClient:
             timeout=self._settings.request_timeout_seconds,
         )
 
+    def post(
+        self,
+        path: str,
+        *,
+        json: Mapping[str, Any] | None = None,
+        params: Mapping[str, Any] | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> Response:
+        return self._session.post(
+            self._build_url(path),
+            json=json,
+            params=params,
+            headers=self._merge_headers(headers),
+            timeout=self._settings.request_timeout_seconds,
+        )
+
     def _build_url(self, path: str) -> str:
         normalized_base = f"{self._settings.medusa_base_url.rstrip('/')}/"
         normalized_path = path.lstrip("/")

@@ -5,6 +5,7 @@ import requests
 
 from quality_gate.clients import (
     HealthClient,
+    StoreAuthClient,
     StoreCategoriesClient,
     StoreProductsClient,
     StoreRegionsClient,
@@ -45,6 +46,16 @@ def health_client(
     """Reusable health client for module-level tests."""
 
     return HealthClient(api_session, settings)
+
+
+@pytest.fixture(scope="module")
+def store_auth_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> StoreAuthClient:
+    """Reusable storefront auth client for module-level tests."""
+
+    return StoreAuthClient(api_session, settings)
 
 
 @pytest.fixture(scope="module")
