@@ -97,6 +97,12 @@ mkdir -p quality-gate/reports
 .venv/bin/python -m pytest --markers quality-gate/tests
 ```
 
+```bash
+.venv/bin/python -m pytest quality-gate/tests/smoke/test_customer_registration_contract.py -q
+```
+
+Для точечной проверки customer registration contract используйте путь к файлу или фильтр по имени теста. CLI-логи включены в `pyproject.toml`, поэтому сообщения `LOGGER.info(...)` видны без отдельного `--log-cli-level`.
+
 ## HTML отчет pytest
 
 Локальный HTML отчет удобен для быстрой демонстрации результата smoke-прогона без чтения полного терминального лога.

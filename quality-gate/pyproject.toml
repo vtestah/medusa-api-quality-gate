@@ -26,6 +26,8 @@ dev = [
 addopts = "-ra"
 pythonpath = ["src"]
 testpaths = ["tests"]
+log_cli = true
+log_cli_level = "INFO"
 markers = [
   "smoke: быстрые smoke checks против живого runtime",
   "contract: контрактная валидация API-ответов",
