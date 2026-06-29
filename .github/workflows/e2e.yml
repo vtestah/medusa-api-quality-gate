@@ -1,0 +1,71 @@
+name: e2e (Playwright)
+
+# Поднимает полный рантайм (включая storefront), сидит демо-данные, перезапускает
+# storefront с реальным publishable key и гоняет Playwright против RU/US витрины.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: Playwright RU/US storefront
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Bring up runtime (postgres + redis + medusa + storefront)
+        run: docker compose up -d --build --wait postgres redis medusa storefront
+
+      - name: Seed demo data
+        run: docker compose exec -T medusa pnpm seed
+
+      - name: Restart storefront with the seeded publishable key
+        run: |
+          KEY="$(docker compose exec -T postgres \
+            psql -U postgres -d medusa -At \
+            -c "select token from api_key where type = 'publishable' limit 1;")"
+          test -n "$KEY" || { echo "::error::no publishable key after seed"; exit 1; }
+          STOREFRONT_MEDUSA_PUBLISHABLE_KEY="$KEY" docker compose up -d storefront
+          sleep 15
+
+      - name: Install Playwright + browser
+        working-directory: e2e
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright (RU + US)
+        working-directory: e2e
+        env:
+          STOREFRONT_BASE_URL: http://localhost:8000
+        run: pnpm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          if-no-files-found: ignore
+
+      - name: Runtime logs on failure
+        if: failure()
+        run: docker compose logs --tail=200 medusa storefront
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
