@@ -1,0 +1,60 @@
+name: integration (live runtime)
+
+# Поднимает реальный рантайм (Medusa + PostgreSQL + Redis) прямо в пайплайне,
+# сидит демо-данные, достаёт publishable key из БД и прогоняет ПОЛНЫЙ pytest-набор.
+# В отличие от quality-gate.yml (быстрый, property/unit), здесь contract/negative/
+# cart/db/localization выполняются по-настоящему, а не скипаются.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  integration:
+    name: Live Store API + PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install quality-gate (dev extras)
+        run: python -m pip install -e "./quality-gate[dev]"
+
+      - name: Bring up runtime (postgres + redis + medusa)
+        run: docker compose up -d --build --wait postgres redis medusa
+
+      - name: Seed demo data
+        run: docker compose exec -T medusa pnpm seed
+
+      - name: Resolve publishable key from the database
+        id: key
+        run: |
+          KEY="$(docker compose exec -T postgres \
+            psql -U postgres -d medusa -At \
+            -c "select token from api_key where type = 'publishable' limit 1;")"
+          test -n "$KEY" || { echo "::error::no publishable key found after seed"; exit 1; }
+          echo "value=$KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Run full suite against the live runtime (runtime tests must not skip)
+        working-directory: quality-gate
+        env:
+          QUALITY_GATE_MEDUSA_BASE_URL: http://localhost:9000
+          QUALITY_GATE_PUBLISHABLE_KEY: ${{ steps.key.outputs.value }}
+          QUALITY_GATE_DB_URL: postgresql://postgres:postgres@localhost:5433/medusa
+        run: python -m pytest -ra -q --cov-report=xml
+
+      - name: Medusa logs (on failure)
+        if: failure()
+        run: docker compose logs --tail=200 medusa
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
