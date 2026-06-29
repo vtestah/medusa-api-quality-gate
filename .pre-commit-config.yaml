@@ -1,0 +1,33 @@
+# Дисциплина "до пуша": базовая гигиена + ruff/mypy в окружении проекта.
+# Установка хуков: pre-commit install
+# Прогон по всем файлам:  pre-commit run --all-files
+minimum_pre_commit_version: "3.5.0"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  # ruff и mypy запускаем в venv проекта (совпадает с CI и строгим конфигом),
+  # а не в изолированном окружении pre-commit — иначе strict mypy не видит зависимости.
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff (quality-gate)
+        entry: bash -c 'cd quality-gate && ../.venv/bin/python -m ruff check --fix src tests'
+        language: system
+        types: [python]
+        files: ^quality-gate/
+        pass_filenames: false
+      - id: mypy
+        name: mypy strict (quality-gate)
+        entry: bash -c 'cd quality-gate && ../.venv/bin/python -m mypy'
+        language: system
+        types: [python]
+        files: ^quality-gate/
+        pass_filenames: false
