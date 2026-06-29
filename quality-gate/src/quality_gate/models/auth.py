@@ -8,3 +8,9 @@ class AuthErrorResponse(ApiModel):
 
     type: str | None = None
     message: str
+
+
+class AuthTokenResponse(ApiModel):
+    """Successful auth response carrying a registration or login JWT."""
+
+    token: str
