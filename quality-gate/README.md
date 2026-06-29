@@ -1,14 +1,72 @@
 # quality-gate
 
+<!-- After pushing to GitHub, replace OWNER/REPO below to activate the live CI badge. -->
+[![quality-gate CI](https://img.shields.io/badge/CI-quality--gate-informational)](../.github/workflows/quality-gate.yml)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)](https://www.python.org/)
+[![lint: ruff](https://img.shields.io/badge/lint-ruff-261230)](https://docs.astral.sh/ruff/)
+[![types: mypy strict](https://img.shields.io/badge/types-mypy%20strict-2a6db2)](https://mypy-lang.org/)
+[![tests: pytest + hypothesis](https://img.shields.io/badge/tests-pytest%20%2B%20hypothesis-0a9edc)](https://docs.pytest.org/)
+[![coverage gate](https://img.shields.io/badge/coverage%20gate-%E2%89%A570%25-brightgreen)](#quality-gates-ci)
+
 Python-пакет для API automation вокруг локального `Medusa` runtime.
 
 ## Что внутри
 
-- `requests.Session` как транспорт
-- `Pydantic v2` для контрактной валидации
-- `pytest` для smoke, contract, localization и DB checks
-- `pytest-html` для локального one-file HTML отчета
-- `psycopg` для PostgreSQL state verification
+- `requests.Session` как транспорт; Service Object клиенты в `clients/`
+- `Pydantic v2` строгие контракты в `models/` (round-trip, `Literal["rub","usd"]`, `NonEmptyStr`)
+- `pytest` для smoke, contract, negative, cart/checkout, localization и cross-layer DB checks
+- `Hypothesis` property-based тесты для чистой логики (контракты, агрегация, pre-flight, fail-fast config)
+- `ruff` + `mypy --strict` + `pytest-cov` как quality gates в CI
+- `pytest-html` / `allure-pytest` для отчётов
+- `psycopg` для read-only PostgreSQL state verification
+
+## Testing strategy
+
+Покрытие построено как пирамида: дешёвые и быстрые проверки внизу, дорогие и зависящие
+от рантайма — наверху.
+
+```text
+        ┌─────────────────────────────┐
+        │   integration (live)        │  contract / negative / cart / db
+        │   против Medusa + Postgres  │  → защищены runtime_ready / db_connection
+        ├─────────────────────────────┤
+        │   property-based (Hypothesis)│  инварианты чистой логики, ≥100 примеров
+        │   контракты, агрегация,      │  → запускаются всегда, без сети
+        │   pre-flight, fail-fast cfg  │
+        ├─────────────────────────────┤
+        │   unit / smoke               │  транспорт, конфиг, фабрики данных
+        └─────────────────────────────┘
+```
+
+Почему так:
+
+- **Property-based для чистой логики.** Инварианты (например «состав корзины агрегируется по
+  `variant_id`», «`currency_code` валиден ⇔ это `rub`/`usd`», «`Settings` падает на пустых
+  значениях до HTTP») проверяются на сотнях сгенерированных примеров, а не на одном хардкоде.
+  Каждый property-тест помечен тегом `# Feature: ..., Property N: ...` со ссылкой на инвариант.
+- **Integration примерами, а не property.** Поведение живого Store API и сверка с PostgreSQL
+  зависят от внешнего сервиса — это 1–3 примера на рынок, параметризованные по `settings.markets`.
+- **Skip, а не fail, при недоступности рантайма.** `runtime_ready` и `db_connection` отделяют
+  «инфраструктура недоступна» от «проверка провалена», поэтому unit/property слой всегда зелёный.
+
+## Quality gates (CI)
+
+CI (`.github/workflows/quality-gate.yml`) на каждый push/PR запускает на Python 3.11 и 3.12:
+
+```bash
+python -m ruff check src tests     # стиль и импорты
+python -m mypy                     # strict-типизация (100% type hints)
+python -m pytest -q                # тесты + покрытие (--cov-fail-under=70)
+```
+
+Те же команды воспроизводятся локально:
+
+```bash
+.venv/bin/python -m pip install -e './quality-gate[dev]'
+.venv/bin/python -m ruff check quality-gate/src quality-gate/tests
+.venv/bin/python -m mypy --config-file quality-gate/pyproject.toml
+.venv/bin/python -m pytest quality-gate/tests -q
+```
 
 ## Структура проекта
 
