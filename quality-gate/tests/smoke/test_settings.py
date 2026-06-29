@@ -42,7 +42,7 @@ def test_settings_read_quality_gate_environment_overrides(
     """QUALITY_GATE_* variables should override defaults for runtime-specific runs."""
 
     monkeypatch.setenv("QUALITY_GATE_MEDUSA_BASE_URL", "http://medusa.local:9000")
-    monkeypatch.setenv("QUALITY_GATE_PUBLISHABLE_KEY", "pk_test_lesson_31")
+    monkeypatch.setenv("QUALITY_GATE_PUBLISHABLE_KEY", "pk_test_demo_31")
     monkeypatch.setenv("QUALITY_GATE_DEFAULT_LOCALE", "en-US")
     monkeypatch.setenv("QUALITY_GATE_REQUEST_TIMEOUT_SECONDS", "3.5")
 
@@ -51,7 +51,7 @@ def test_settings_read_quality_gate_environment_overrides(
     assert settings.medusa_base_url == "http://medusa.local:9000"
     assert settings.default_locale == "en-US"
     assert settings.request_timeout_seconds == 3.5
-    assert settings.store_headers == {"x-publishable-api-key": "pk_test_lesson_31"}
+    assert settings.store_headers == {"x-publishable-api-key": "pk_test_demo_31"}
 
 
 def test_settings_reject_blank_publishable_key(

@@ -12,11 +12,11 @@ from quality_gate.test_data import build_customer_credentials
 def test_customer_credentials_are_unique_and_payload_ready() -> None:
     """Generated credentials should be unique and ready for JSON payloads."""
 
-    first = build_customer_credentials(prefix="TCID29")
-    second = build_customer_credentials(prefix="TCID29")
+    first = build_customer_credentials(prefix="qa-customer")
+    second = build_customer_credentials(prefix="qa-customer")
 
     assert first.email != second.email
-    assert first.email.startswith("tcid29_")
+    assert first.email.startswith("qa-customer_")
     assert first.email.endswith("@example.test")
     assert len(first.password) == 20
 

@@ -121,7 +121,7 @@ def test_store_customer_client_builds_payload_headers_and_contract() -> None:
     session = RecordingSession(response)
     settings = Settings(
         medusa_base_url="http://medusa.test",
-        publishable_key="pk_test_lesson",
+        publishable_key="pk_test_demo",
         request_timeout_seconds=2.5,
     )
     client = StoreCustomersClient(session=session, settings=settings)
@@ -145,7 +145,7 @@ def test_store_customer_client_builds_payload_headers_and_contract() -> None:
         "phone": "+15551234567",
     }
     assert post_call["headers"] == {
-        "x-publishable-api-key": "pk_test_lesson",
+        "x-publishable-api-key": "pk_test_demo",
         "Authorization": "Bearer jwt-test-token",
         "Content-Type": "application/json",
         "x-medusa-locale": "ru-RU",

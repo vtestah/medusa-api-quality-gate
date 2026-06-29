@@ -14,7 +14,7 @@ def test_bootstrap_snapshot_matches_project_venv_when_expected_python_is_active(
 ) -> None:
     """The helper should recognize the project venv as the active interpreter."""
 
-    project_root = tmp_path / "ecom-quality-gate"
+    project_root = tmp_path / "medusa-api-quality-gate"
     expected_python = project_root / ".venv" / "bin" / "python"
     expected_python.parent.mkdir(parents=True)
     expected_python.write_text("#!/usr/bin/env python3\n", encoding="utf-8")
@@ -37,7 +37,7 @@ def test_bootstrap_snapshot_detects_unactivated_shell_when_system_python_is_used
 ) -> None:
     """The helper should flag the shell when it still runs outside the project venv."""
 
-    project_root = tmp_path / "ecom-quality-gate"
+    project_root = tmp_path / "medusa-api-quality-gate"
     expected_python = project_root / ".venv" / "bin" / "python"
     expected_python.parent.mkdir(parents=True)
     expected_python.write_text("#!/usr/bin/env python3\n", encoding="utf-8")
