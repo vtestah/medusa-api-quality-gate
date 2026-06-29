@@ -89,9 +89,9 @@ quality-gate/
 ```
 
 Framework code belongs in `src/quality_gate/`; executable checks belong in `tests/`.
-One-off learning snippets belong in `notes/lessons/`, not in production test code.
+Ad-hoc scratch snippets do not belong in the production test tree.
 
-Test directories are named by stable suite/risk type. Current directories are `smoke/`, `localization/`, and `db/`; a category like `contract` can start as a marker and become `contract/` only when it grows into a dedicated suite. Do not create folders for situational labels such as `sanity`, `preflight`, or course IDs; capture those in test names, docstrings, logs, notes, or `-k` filters.
+Test directories are named by stable suite/risk type. Current directories are `smoke/`, `contract/`, `negative/`, `cart/`, `localization/`, and `db/`. A category can start as a marker and become its own directory only when it grows into a dedicated suite. Do not create folders for situational labels such as `sanity` or `preflight`; capture those in test names, docstrings, logs, or `-k` filters.
 
 ## HTTP client conventions
 
@@ -217,7 +217,7 @@ env | sort | grep '^QUALITY_GATE_'
 Локальный HTML отчет удобен для быстрой демонстрации результата smoke-прогона без чтения полного терминального лога.
 
 ```bash
-cd ecom-quality-gate
+cd medusa-api-quality-gate
 pnpm quality-gate:install
 pnpm quality-gate:test:html
 ```

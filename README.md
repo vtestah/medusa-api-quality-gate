@@ -1,4 +1,4 @@
-# ecom-quality-gate
+# medusa-api-quality-gate
 
 ![Medusa](https://img.shields.io/badge/Medusa-v2.13.6-0A7BFF)
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.9-000000)
@@ -13,7 +13,7 @@ Public portfolio repository for a Senior SDET track focused on API quality gates
 ## Architecture
 
 ```text
-ecom-quality-gate/
+medusa-api-quality-gate/
 ├── package.json         # Root scripts for Docker runtime
 ├── pnpm-workspace.yaml  # Monorepo policy for all JS apps
 ├── quality-gate/        # Python pytest framework for API quality gates
@@ -80,7 +80,9 @@ Runtime proof points:
 
 ## Python Quality Gate
 
-Python API automation now lives in `quality-gate/` and targets the live Medusa runtime from this repository.
+Python API automation lives in `quality-gate/` and targets the live Medusa runtime from this
+repository. It runs as a CI quality gate (ruff + mypy strict + pytest with coverage) on every push.
+See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
 
 Structure:
 
@@ -88,28 +90,32 @@ Structure:
 quality-gate/
 ├── pyproject.toml
 ├── src/quality_gate/
-│   ├── clients/   # Health, regions, products, categories
-│   ├── models/    # Pydantic contracts
-│   ├── db/        # PostgreSQL helpers
-│   └── config.py
+│   ├── clients/   # Service Object clients: health, regions, products, categories, cart, shipping
+│   ├── models/    # Pydantic v2 contracts: regions, products, cart, errors + round-trip helpers
+│   ├── db/        # read-only PostgreSQL helpers and cross-layer reconciler
+│   ├── config.py  # env-based Settings with RU/US market profiles
+│   └── test_data.py
 └── tests/
-    ├── smoke/
-    ├── localization/
-    └── db/
+    ├── smoke/         # fast runtime and bootstrap checks
+    ├── contract/      # strict response validation + round-trip (incl. property-based)
+    ├── negative/      # Store API negative input scenarios
+    ├── cart/          # cart/checkout flows and market-driven shipping (incl. property-based)
+    ├── localization/  # x-medusa-locale contract checks
+    └── db/            # cross-layer PostgreSQL reconciliation
 ```
+
+Test layers:
+
+- **property-based (Hypothesis)** for pure logic invariants — contracts, cart aggregation,
+  client pre-flight validation, fail-fast configuration (run on every push, no runtime needed);
+- **integration** against the live Store API and PostgreSQL, guarded so they skip cleanly when the
+  runtime is down;
+- **smoke/unit** for transport, configuration, and data factories.
 
 Quick commands:
 
 ```bash
 pnpm quality-gate:venv
-```
-
-```bash
-pnpm quality-gate:bootstrap-status
-```
-
-```bash
-pnpm quality-gate:bootstrap-status:venv
 ```
 
 ```bash
@@ -251,18 +257,18 @@ This is the backend analogue of testing a real frontend app with the correct sto
 - `5173` is intentionally not published to the host anymore; the real admin entrypoint is `http://localhost:9000/app`.
 - Storefront now defaults to `ru`, not `gb`.
 
-## Screenshots To Capture For Portfolio
+## Roadmap
 
-- `RU home`: hero with Russian copy and RUB pricing
-- `US store`: category grid with USD pricing
-- `Medusa admin`: regions `Russia` and `United States`
-- `Checkout shipping`: RU methods vs US methods
-- `Database verification`: SQL result for regions, currencies, and product count
+Delivered:
 
-## Next Modules
+- Strict contract validation of Store API responses (Pydantic v2 + round-trip checks)
+- Store API negative scenarios (auth, malformed payloads, boundary values)
+- Cart and checkout flows with market-driven shipping for RU and US
+- Cross-layer PostgreSQL reconciliation of API state
+- Property-based tests for pure logic and CI quality gates (ruff, mypy strict, coverage)
 
-- Expand the Python `quality-gate` package from Store API smoke checks to richer contract coverage
-- Add publishable-key edge cases and Store API negative scenarios
-- Add DB verification helpers for richer cross-layer assertions
-- Add Admin API and auth-heavy flows only after the course reaches those concepts
-- Add Playwright UI checks against the localized storefront once the API layer is locked
+Next:
+
+- Admin API and auth-heavy flows
+- Playwright UI checks against the localized storefront once the API layer is locked
+- Schemathesis fuzzing driven by the Medusa OpenAPI schema

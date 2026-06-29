@@ -1,5 +1,5 @@
 {
-  "name": "ecom-quality-gate",
+  "name": "medusa-api-quality-gate",
   "private": true,
   "scripts": {
     "docker:up": "docker compose up --build -d",
