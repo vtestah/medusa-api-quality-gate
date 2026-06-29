@@ -2,7 +2,7 @@
 
 from pydantic import Field
 
-from quality_gate.models.common import ApiModel, PaginatedEnvelope
+from quality_gate.models.common import ApiModel, NonEmptyStr, PaginatedEnvelope
 
 
 class StoreProductVariant(ApiModel):
@@ -17,9 +17,9 @@ class StoreProductVariant(ApiModel):
 class StoreProduct(ApiModel):
     """Minimal product contract for smoke and localization checks."""
 
-    id: str
-    handle: str
-    title: str | None = None
+    id: NonEmptyStr
+    handle: NonEmptyStr
+    title: NonEmptyStr
     description: str | None = None
     subtitle: str | None = None
     material: str | None = None

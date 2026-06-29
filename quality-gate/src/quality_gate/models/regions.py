@@ -2,7 +2,8 @@
 
 from pydantic import Field
 
-from quality_gate.models.common import ApiModel, PaginatedEnvelope
+from quality_gate.models.common import ApiModel, NonEmptyStr, PaginatedEnvelope
+from quality_gate.models.contract import CurrencyCode
 
 
 class StoreCountry(ApiModel):
@@ -16,9 +17,9 @@ class StoreCountry(ApiModel):
 class StoreRegion(ApiModel):
     """Minimal region contract used by the Python smoke suite."""
 
-    id: str
-    name: str
-    currency_code: str | None = None
+    id: NonEmptyStr
+    name: NonEmptyStr
+    currency_code: CurrencyCode
     countries: list[StoreCountry] = Field(default_factory=list)
 
 
