@@ -22,13 +22,17 @@ class BaseApiClient:
         *,
         params: Mapping[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
+        expected_status_code: int | None = None,
     ) -> Response:
-        return self._session.get(
+        response = self._session.get(
             self._build_url(path),
             params=params,
             headers=self._merge_headers(headers),
             timeout=self._settings.request_timeout_seconds,
         )
+        if expected_status_code is not None:
+            return self.expect_status_code(response, expected_status_code)
+        return response
 
     def post(
         self,
@@ -37,13 +41,36 @@ class BaseApiClient:
         json: Mapping[str, Any] | None = None,
         params: Mapping[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
+        expected_status_code: int | None = None,
     ) -> Response:
-        return self._session.post(
+        response = self._session.post(
             self._build_url(path),
             json=json,
             params=params,
             headers=self._merge_headers(headers),
             timeout=self._settings.request_timeout_seconds,
+        )
+        if expected_status_code is not None:
+            return self.expect_status_code(response, expected_status_code)
+        return response
+
+    @staticmethod
+    def expect_status_code(
+        response: Response,
+        expected_status_code: int,
+    ) -> Response:
+        """Return the response only when the HTTP status matches the contract."""
+
+        if response.status_code == expected_status_code:
+            return response
+
+        response_url = response.url or "<unknown url>"
+        body_preview = response.text[:500].replace("\n", "\\n")
+        raise AssertionError(
+            f"Expected status code {expected_status_code}, "
+            f"but actual is {response.status_code}. "
+            f"URL: {response_url}. "
+            f"Response body: {body_preview}"
         )
 
     def _build_url(self, path: str) -> str:
