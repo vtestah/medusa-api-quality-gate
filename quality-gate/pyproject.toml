@@ -21,10 +21,14 @@ dev = [
   "pytest-html>=4.2,<5.0",
   "allure-pytest>=2.13,<3.0",
   "hypothesis>=6,<7",
+  "pytest-cov>=5,<7",
+  "ruff>=0.6,<1.0",
+  "mypy>=1.11,<2.0",
+  "types-requests>=2.32,<3.0",
 ]
 
 [tool.pytest.ini_options]
-addopts = "-ra"
+addopts = "-ra --strict-markers --cov=quality_gate --cov-report=term-missing"
 pythonpath = ["src"]
 testpaths = ["tests"]
 log_cli = true
@@ -40,3 +44,54 @@ markers = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # isort
+  "UP",   # pyupgrade
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "SIM",  # flake8-simplify
+  "RUF",  # ruff-specific rules
+]
+ignore = [
+  # This repo is intentionally bilingual (Russian docstrings/comments); the
+  # Cyrillic/Latin look-alike rules only produce false positives here.
+  "RUF001",
+  "RUF002",
+  "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests may use assert and longer, descriptive names.
+"tests/**" = ["S101"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+strict = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+plugins = ["pydantic.mypy"]
+
+[tool.coverage.run]
+source = ["quality_gate"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 70
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if TYPE_CHECKING:",
+]

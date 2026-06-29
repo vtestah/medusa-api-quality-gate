@@ -20,7 +20,7 @@ class RecordingSession(Session):
         self._response = response
         self.post_calls: list[dict[str, Any]] = []
 
-    def post(
+    def post(  # type: ignore[override]  # test double narrows Session.post to the args under test
         self,
         url: str,
         *,

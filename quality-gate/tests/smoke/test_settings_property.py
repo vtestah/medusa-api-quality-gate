@@ -49,7 +49,9 @@ def test_settings_rejects_blank_required_values(field_name: str, blank_value: st
     """
 
     with pytest.raises(ValidationError):
-        Settings(_env_file=None, **{field_name: blank_value})
+        # Dynamic field name + value cannot be statically matched to the
+        # synthesized Settings __init__ signature; the runtime behaviour is asserted.
+        Settings(_env_file=None, **{field_name: blank_value})  # type: ignore[arg-type]
 
 
 # Feature: test-coverage-expansion, Property 7: Settings падает на этапе конфигурации при недопустимых значениях

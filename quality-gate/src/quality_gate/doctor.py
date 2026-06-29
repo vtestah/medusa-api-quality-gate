@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
 import json
-from pathlib import Path
 import sys
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 from quality_gate import __version__
 

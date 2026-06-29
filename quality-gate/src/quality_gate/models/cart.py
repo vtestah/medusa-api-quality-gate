@@ -86,7 +86,7 @@ def aggregate_line_items(additions: Sequence[tuple[str, int]]) -> list[LineItem]
         A list of :class:`LineItem`, one per unique ``variant_id``, with quantities
         summed across all additions for that variant.
     """
-    totals: "OrderedDict[str, int]" = OrderedDict()
+    totals: OrderedDict[str, int] = OrderedDict()
     for variant_id, quantity in additions:
         totals[variant_id] = totals.get(variant_id, 0) + quantity
     return [

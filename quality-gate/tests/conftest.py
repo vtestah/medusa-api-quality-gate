@@ -29,7 +29,7 @@ def settings() -> Settings:
 
 
 @pytest.fixture(scope="session")
-def api_session() -> requests.Session:
+def api_session() -> Iterator[requests.Session]:
     """Shared HTTP session for all API clients."""
 
     session = requests.Session()
@@ -144,13 +144,13 @@ def runtime_ready(
 
 
 @pytest.fixture(scope="session")
-def db_connection(settings: Settings) -> PostgresDb:
+def db_connection(settings: Settings) -> Iterator[PostgresDb]:
     """Connected PostgreSQL helper for state verification."""
 
     connection = PostgresDb(settings.db_url)
     try:
         connection.connect()
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         pytest.skip(f"Local PostgreSQL unavailable: {exc}")
 
     yield connection

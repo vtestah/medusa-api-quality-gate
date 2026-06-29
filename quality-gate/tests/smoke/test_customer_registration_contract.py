@@ -8,7 +8,6 @@ from quality_gate.clients import StoreAuthClient, StoreCustomersClient
 from quality_gate.models import AuthErrorResponse
 from quality_gate.test_data import build_customer_credentials
 
-
 LOGGER = logging.getLogger(__name__)
 
 

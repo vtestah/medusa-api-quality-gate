@@ -46,7 +46,7 @@ def test_aggregate_line_items_collapses_by_variant_id(
 
     # Expected totals computed independently of the implementation, preserving
     # first-occurrence order for the unique-count comparison.
-    expected_totals: "OrderedDict[str, int]" = OrderedDict()
+    expected_totals: OrderedDict[str, int] = OrderedDict()
     for variant_id, quantity in additions:
         expected_totals[variant_id] = expected_totals.get(variant_id, 0) + quantity
 
