@@ -2,7 +2,7 @@ name: quality-gate CI
 
 on:
   push:
-    branches: [master]
+    branches: [main, master]
     paths:
       - "quality-gate/**"
       - ".github/workflows/quality-gate.yml"
