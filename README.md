@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12-3776AB)
 ![pytest](https://img.shields.io/badge/pytest-8.x-0A9EDC)
+![Playwright](https://img.shields.io/badge/Playwright-TS-2EAD33)
 ![Medusa](https://img.shields.io/badge/Medusa-v2.13.6-0A7BFF)
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.9-000000)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)
@@ -12,7 +13,10 @@
 
 Public portfolio repository for a **Senior SDET** track focused on **API quality gates** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized as a dual-market demo: Russia first, United States second.
 
-The Python quality gate is the primary pillar (API/contract/state); a TypeScript + Playwright UI layer against the localized storefront is the second pillar (in progress, see [Roadmap](#roadmap)).
+Two pillars:
+
+- **API quality gate (primary)** — Python/pytest against the live Store API and PostgreSQL.
+- **UI E2E (second pillar)** — Playwright (TypeScript) against the localized RU/US storefront.
 
 ## QA Highlights
 
@@ -21,17 +25,17 @@ The Python quality gate is the primary pillar (API/contract/state); a TypeScript
 - **Negative testing** — auth, malformed payloads, and boundary values against the Store API.
 - **Cart / checkout flows** — market-driven shipping for RU and US.
 - **Cross-layer state verification** — read-only PostgreSQL reconciliation of API state vs the database.
-- **Real SUT, not mocks** — tests target a live Medusa runtime brought up via Docker Compose.
-- **Service Object clients** — typed clients for health, regions, products, categories, cart, shipping.
+- **Real SUT, not mocks** — tests target a live Medusa runtime brought up via Docker Compose, in local dev *and in CI*.
+- **UI E2E (Playwright, TypeScript)** — Page Object Model + per-market projects against the localized RU/US storefront.
 - **CI quality gate** — ruff + mypy strict + pytest with coverage on every push (coverage floor enforced at `fail_under=70`).
 
 ## Testing Strategy
 
-A test pyramid: a wide base of fast property-based and unit tests that need no runtime, an integration layer against the live Store API and PostgreSQL, smoke checks on top, and a planned UI E2E cap.
+A test pyramid: a wide base of fast property-based and unit tests that need no runtime, an integration layer against the live Store API and PostgreSQL, smoke checks, and a UI E2E cap on the localized storefront.
 
 ```mermaid
 flowchart TB
-    E["UI E2E · Playwright TS · RU/US storefront — planned (few)"]
+    E["UI E2E · Playwright TS · RU/US storefront (few)"]
     S["Smoke · health, bootstrap, transport"]
     I["Integration · live Store API + PostgreSQL · contract / negative / cart / db"]
     P["Property-based + unit · Hypothesis, contracts, config · no runtime (many, fast)"]
@@ -41,9 +45,9 @@ flowchart TB
 Test layers:
 
 - **property-based (Hypothesis)** for pure-logic invariants — run on every push, no runtime needed;
-- **integration** against the live Store API and PostgreSQL, guarded to skip cleanly when the runtime is down (CI brings the runtime up so they actually execute);
+- **integration** against the live Store API and PostgreSQL — guarded to skip locally when the runtime is down, and executed for real in CI (the pipeline brings the runtime up);
 - **smoke / unit** for transport, configuration, and data factories;
-- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — *planned, Phase 3*.
+- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — Page Object Model, per-market projects, HTML report (see [`e2e/`](e2e/)).
 
 See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
 
@@ -81,13 +85,40 @@ pnpm quality-gate:test:smoke
 pnpm quality-gate:test:localization
 ```
 
+## UI E2E (Playwright)
+
+A TypeScript Playwright suite in `e2e/` drives the localized storefront as the user does and mirrors the runtime proof points (market routing, localized chrome, currency, market shipping).
+
+```text
+e2e/
+├── playwright.config.ts   # baseURL from env; projects "ru" and "us"
+├── src/
+│   ├── market.ts          # RU/US market profiles (prefix, locale, currency, shipping)
+│   ├── fixtures.ts        # per-market option + Page Object fixtures
+│   └── pages/             # Page Object Model: home, store, cart
+└── tests/
+    ├── smoke.spec.ts          # "/" -> localized market; market home loads
+    ├── localization.spec.ts   # html lang, currency, RU category «Худи»
+    └── cart.spec.ts           # add to cart -> market-driven shipping
+```
+
+Run it against a live storefront:
+
+```bash
+make up        # bring the runtime up
+make seed      # seed demo data
+make e2e       # install Playwright + run RU/US suites
+```
+
+Reports include the Playwright HTML report plus traces, screenshots, and video retained on failure.
+
 ## Why This Matters For QA
 
 - Contract tests need a real SUT, not hand-waved mocks.
 - State verification becomes possible once the backend and database are reproducible.
 - Market routing is a first-class runtime contract, not a cosmetic i18n toggle.
 - Region-driven pricing is testable independently from UI rendering.
-- Future Python and Playwright clients can target one canonical API surface at `http://localhost:9000`.
+- The same seeded runtime backs both the API gate and the Playwright UI E2E.
 
 This is the backend analogue of testing a real frontend app with the correct store, router context, and seeded state instead of snapshotting empty shells.
 
@@ -100,6 +131,7 @@ make seed     # seed demo data and sync the publishable key
 make setup    # create venv and install quality-gate[dev]
 make test     # run the pytest suite
 make lint     # ruff + mypy strict (same as CI)
+make e2e      # Playwright UI E2E (needs the runtime up)
 ```
 
 ## Architecture
@@ -109,9 +141,10 @@ medusa-api-quality-gate/
 ├── package.json         # Root scripts for Docker runtime
 ├── pnpm-workspace.yaml  # Monorepo policy for all JS apps
 ├── quality-gate/        # Python pytest framework for API quality gates
+├── e2e/                 # Playwright (TypeScript) UI E2E: RU/US storefront
 ├── apps/
 │   ├── medusa/          # System under test: Medusa backend
-│   └── storefront/      # Next.js target UI (localized RU/US) for browser automation
+│   └── storefront/      # Next.js target UI (localized RU/US)
 ├── docker-compose.yml   # postgres + redis + medusa + storefront
 ├── Makefile             # one-command demo
 └── README.md
@@ -297,10 +330,12 @@ Delivered:
 - Cart and checkout flows with market-driven shipping for RU and US
 - Cross-layer PostgreSQL reconciliation of API state
 - Property-based tests for pure logic and CI quality gates (ruff, mypy strict, coverage)
+- Integration tests executed live in CI (runtime brought up in the pipeline)
+- Playwright (TypeScript) UI E2E against the localized RU/US storefront (smoke, localization, cart shipping)
 
 Next:
 
-- Integration tests executed live in CI (runtime brought up in the pipeline)
-- Playwright UI checks (TypeScript) against the localized storefront
 - Admin API and auth-heavy flows
 - Schemathesis fuzzing driven by the Medusa OpenAPI schema
+- Mutation testing (mutmut) over models and clients
+- Public Allure report on GitHub Pages
