@@ -1,7 +1,7 @@
 # quality-gate
 
-<!-- After pushing to GitHub, replace OWNER/REPO below to activate the live CI badge. -->
-[![quality-gate CI](https://img.shields.io/badge/CI-quality--gate-informational)](../.github/workflows/quality-gate.yml)
+<!-- markdownlint-disable MD013 -->
+[![CI](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)](https://www.python.org/)
 [![lint: ruff](https://img.shields.io/badge/lint-ruff-261230)](https://docs.astral.sh/ruff/)
 [![types: mypy strict](https://img.shields.io/badge/types-mypy%20strict-2a6db2)](https://mypy-lang.org/)
