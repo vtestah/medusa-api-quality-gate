@@ -1,10 +1,13 @@
 """Shared Pydantic base models."""
 
-from typing import Generic, TypeVar
+from typing import Annotated, Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, StringConstraints
 
 ItemT = TypeVar("ItemT")
+
+NonEmptyStr = Annotated[str, StringConstraints(min_length=1, strip_whitespace=True)]
+"""Reusable non-empty string type: trims whitespace and requires at least one character."""
 
 
 class ApiModel(BaseModel):
