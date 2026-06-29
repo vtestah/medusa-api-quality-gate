@@ -1,14 +1,106 @@
 # medusa-api-quality-gate
 
+[![quality-gate CI](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml)
+![coverage](https://img.shields.io/badge/coverage-76%25-brightgreen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.11%20|%203.12-3776AB)
+![pytest](https://img.shields.io/badge/pytest-8.x-0A9EDC)
 ![Medusa](https://img.shields.io/badge/Medusa-v2.13.6-0A7BFF)
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.9-000000)
-![next-intl](https://img.shields.io/badge/next--intl-4.9.1-0F172A)
-![pnpm](https://img.shields.io/badge/pnpm-10.33.0-F69220)
-![Docker Compose](https://img.shields.io/badge/Docker_Compose-local_runtime-2496ED)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)
 ![Redis](https://img.shields.io/badge/Redis-8-DC382D)
 
-Public portfolio repository for a Senior SDET track focused on API quality gates for a headless commerce stack. The runtime under test is Medusa.js backed by PostgreSQL and Redis. The customer-facing target UI is a Next.js storefront localized as a dual-market demo: Russia first, United States second.
+Public portfolio repository for a **Senior SDET** track focused on **API quality gates** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized as a dual-market demo: Russia first, United States second.
+
+The Python quality gate is the primary pillar (API/contract/state); a TypeScript + Playwright UI layer against the localized storefront is the second pillar (in progress, see [Roadmap](#roadmap)).
+
+## QA Highlights
+
+- **Contract testing** — strict Store API validation with Pydantic v2 and round-trip (serialize → deserialize) checks.
+- **Property-based testing (Hypothesis)** — invariants for contracts, cart aggregation, client pre-flight, and fail-fast config; runs on every push without a runtime.
+- **Negative testing** — auth, malformed payloads, and boundary values against the Store API.
+- **Cart / checkout flows** — market-driven shipping for RU and US.
+- **Cross-layer state verification** — read-only PostgreSQL reconciliation of API state vs the database.
+- **Real SUT, not mocks** — tests target a live Medusa runtime brought up via Docker Compose.
+- **Service Object clients** — typed clients for health, regions, products, categories, cart, shipping.
+- **CI quality gate** — ruff + mypy strict + pytest with coverage on every push (coverage floor enforced at `fail_under=70`).
+
+## Testing Strategy
+
+A test pyramid: a wide base of fast property-based and unit tests that need no runtime, an integration layer against the live Store API and PostgreSQL, smoke checks on top, and a planned UI E2E cap.
+
+```mermaid
+flowchart TB
+    E["UI E2E · Playwright TS · RU/US storefront — planned (few)"]
+    S["Smoke · health, bootstrap, transport"]
+    I["Integration · live Store API + PostgreSQL · contract / negative / cart / db"]
+    P["Property-based + unit · Hypothesis, contracts, config · no runtime (many, fast)"]
+    E --- S --- I --- P
+```
+
+Test layers:
+
+- **property-based (Hypothesis)** for pure-logic invariants — run on every push, no runtime needed;
+- **integration** against the live Store API and PostgreSQL, guarded to skip cleanly when the runtime is down (CI brings the runtime up so they actually execute);
+- **smoke / unit** for transport, configuration, and data factories;
+- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — *planned, Phase 3*.
+
+See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
+
+## Python Quality Gate
+
+Python API automation lives in `quality-gate/` and targets the live Medusa runtime from this
+repository. It runs as a CI quality gate (ruff + mypy strict + pytest with coverage) on every push.
+
+Structure:
+
+```text
+quality-gate/
+├── pyproject.toml
+├── src/quality_gate/
+│   ├── clients/   # Service Object clients: health, regions, products, categories, cart, shipping
+│   ├── models/    # Pydantic v2 contracts: regions, products, cart, errors + round-trip helpers
+│   ├── db/        # read-only PostgreSQL helpers and cross-layer reconciler
+│   ├── config.py  # env-based Settings with RU/US market profiles
+│   └── test_data.py
+└── tests/
+    ├── smoke/         # fast runtime and bootstrap checks
+    ├── contract/      # strict response validation + round-trip (incl. property-based)
+    ├── negative/      # Store API negative input scenarios
+    ├── cart/          # cart/checkout flows and market-driven shipping (incl. property-based)
+    ├── localization/  # x-medusa-locale contract checks
+    └── db/            # cross-layer PostgreSQL reconciliation
+```
+
+Quick commands (or use the [Makefile](#one-command-demo)):
+
+```bash
+pnpm quality-gate:venv
+pnpm quality-gate:install
+pnpm quality-gate:test:smoke
+pnpm quality-gate:test:localization
+```
+
+## Why This Matters For QA
+
+- Contract tests need a real SUT, not hand-waved mocks.
+- State verification becomes possible once the backend and database are reproducible.
+- Market routing is a first-class runtime contract, not a cosmetic i18n toggle.
+- Region-driven pricing is testable independently from UI rendering.
+- Future Python and Playwright clients can target one canonical API surface at `http://localhost:9000`.
+
+This is the backend analogue of testing a real frontend app with the correct store, router context, and seeded state instead of snapshotting empty shells.
+
+## One-Command Demo
+
+```bash
+make help     # list targets
+make up       # Medusa + PostgreSQL + Redis + storefront
+make seed     # seed demo data and sync the publishable key
+make setup    # create venv and install quality-gate[dev]
+make test     # run the pytest suite
+make lint     # ruff + mypy strict (same as CI)
+```
 
 ## Architecture
 
@@ -19,8 +111,9 @@ medusa-api-quality-gate/
 ├── quality-gate/        # Python pytest framework for API quality gates
 ├── apps/
 │   ├── medusa/          # System under test: Medusa backend
-│   └── storefront/      # Next.js target UI for future browser automation
+│   └── storefront/      # Next.js target UI (localized RU/US) for browser automation
 ├── docker-compose.yml   # postgres + redis + medusa + storefront
+├── Makefile             # one-command demo
 └── README.md
 ```
 
@@ -33,14 +126,14 @@ medusa-api-quality-gate/
 | Russia | `/ru` | `Russia` | `RUB` | Russian chrome | `Курьер`, `ПВЗ`, `Самовывоз` |
 | United States | `/us` | `United States` | `USD` | English chrome | `Standard Shipping`, `Express Shipping` |
 
-Catalog handles remain canonical in English on purpose, but display content is now served through the Medusa Translation Module. That gives us two clean layers:
+Catalog handles remain canonical in English on purpose, but display content is served through the Medusa Translation Module. That gives us two clean layers:
 
 - stable English identifiers for fixtures, URLs, and contracts
 - localized product/category/collection content for `/ru` and `/us`
 
 ## UI Localization Library
 
-Storefront shell localization is powered by `next-intl`, while Medusa Translation Module now owns catalog translations.
+Storefront shell localization is powered by `next-intl`, while the Medusa Translation Module owns catalog translations.
 
 ```text
 /ru -> region: Russia, currency: RUB, locale: ru-RU
@@ -77,58 +170,6 @@ Runtime proof points:
 - Medusa health: `http://localhost:9000/health`
 - Medusa admin: `http://localhost:9000/app`
 - PostgreSQL host access: `localhost:5433`
-
-## Python Quality Gate
-
-Python API automation lives in `quality-gate/` and targets the live Medusa runtime from this
-repository. It runs as a CI quality gate (ruff + mypy strict + pytest with coverage) on every push.
-See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
-
-Structure:
-
-```text
-quality-gate/
-├── pyproject.toml
-├── src/quality_gate/
-│   ├── clients/   # Service Object clients: health, regions, products, categories, cart, shipping
-│   ├── models/    # Pydantic v2 contracts: regions, products, cart, errors + round-trip helpers
-│   ├── db/        # read-only PostgreSQL helpers and cross-layer reconciler
-│   ├── config.py  # env-based Settings with RU/US market profiles
-│   └── test_data.py
-└── tests/
-    ├── smoke/         # fast runtime and bootstrap checks
-    ├── contract/      # strict response validation + round-trip (incl. property-based)
-    ├── negative/      # Store API negative input scenarios
-    ├── cart/          # cart/checkout flows and market-driven shipping (incl. property-based)
-    ├── localization/  # x-medusa-locale contract checks
-    └── db/            # cross-layer PostgreSQL reconciliation
-```
-
-Test layers:
-
-- **property-based (Hypothesis)** for pure logic invariants — contracts, cart aggregation,
-  client pre-flight validation, fail-fast configuration (run on every push, no runtime needed);
-- **integration** against the live Store API and PostgreSQL, guarded so they skip cleanly when the
-  runtime is down;
-- **smoke/unit** for transport, configuration, and data factories.
-
-Quick commands:
-
-```bash
-pnpm quality-gate:venv
-```
-
-```bash
-pnpm quality-gate:install
-```
-
-```bash
-pnpm quality-gate:test:smoke
-```
-
-```bash
-pnpm quality-gate:test:localization
-```
 
 ## Quick Start
 
@@ -232,16 +273,6 @@ US cart should expose:
 - `Standard Shipping`
 - `Express Shipping`
 
-## Why This Matters For QA
-
-- Contract tests need a real SUT, not hand-waved mocks.
-- State verification becomes possible once the backend and database are reproducible.
-- Market routing is a first-class runtime contract, not a cosmetic i18n toggle.
-- Region-driven pricing is testable independently from UI rendering.
-- Future Python clients can target one canonical API surface at `http://localhost:9000`.
-
-This is the backend analogue of testing a real frontend app with the correct store, router context, and seeded state instead of snapshotting empty shells.
-
 ## Package Manager Policy
 
 - Entire repository: `pnpm`
@@ -255,7 +286,7 @@ This is the backend analogue of testing a real frontend app with the correct sto
 - PostgreSQL 18 uses the recommended volume mount at `/var/lib/postgresql`.
 - Host PostgreSQL is exposed on `5433`, not `5432`, to avoid collisions with an already running local database.
 - `5173` is intentionally not published to the host anymore; the real admin entrypoint is `http://localhost:9000/app`.
-- Storefront now defaults to `ru`, not `gb`.
+- Storefront defaults to `ru`, not `gb`.
 
 ## Roadmap
 
@@ -269,6 +300,7 @@ Delivered:
 
 Next:
 
+- Integration tests executed live in CI (runtime brought up in the pipeline)
+- Playwright UI checks (TypeScript) against the localized storefront
 - Admin API and auth-heavy flows
-- Playwright UI checks against the localized storefront once the API layer is locked
 - Schemathesis fuzzing driven by the Medusa OpenAPI schema
