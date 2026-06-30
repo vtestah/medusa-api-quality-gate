@@ -16,4 +16,8 @@ class HealthClient(BaseApiClient):
     def retrieve(self) -> HealthResponse:
         response = self.get("/health")
         response.raise_for_status()
-        return HealthResponse.model_validate(response.json())
+        # Medusa's /health returns plain text ("OK"), not JSON; fall back to text.
+        try:
+            return HealthResponse.model_validate(response.json())
+        except ValueError:
+            return HealthResponse(status=response.text.strip())

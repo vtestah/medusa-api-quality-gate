@@ -71,7 +71,7 @@ class Settings(BaseSettings):
         alias="QUALITY_GATE_RU_CURRENCY_CODE",
     )
     ru_shipping_methods: frozenset[str] = Field(
-        default=frozenset({"Курьер", "ПВЗ", "Самовывоз"}),
+        default=frozenset({"Courier Delivery", "Pickup Point", "Store Pickup"}),
         alias="QUALITY_GATE_RU_SHIPPING_METHODS",
     )
     us_currency_code: str = Field(

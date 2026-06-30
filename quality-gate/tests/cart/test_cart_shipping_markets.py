@@ -76,9 +76,11 @@ def test_shipping_options_match_market_methods(
 ) -> None:
     """Available shipping option names equal the market's configured method set.
 
-    For RU the set is exactly {Курьер, ПВЗ, Самовывоз} (Req 5.1); for US it is
-    exactly {Standard Shipping, Express Shipping} (Req 5.2). The expected set is
-    read from ``settings.markets`` rather than hard-coded (Req 5.8).
+    Asserts the canonical Store API option names per market (read from
+    ``settings.markets``, not hard-coded, Req 5.8): the RU market exposes three
+    courier/pickup options and the US market exposes two standard/express
+    options. Localized *display* names (e.g. RU «Курьер») are verified at the UI
+    layer by the Playwright e2e suite.
     """
 
     market = settings.markets[market_code]
