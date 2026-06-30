@@ -41,9 +41,9 @@ The base runs on every push with no runtime. The integration layer talks to the 
 
 ## Screenshot
 
-<!-- Add a screenshot of the RU/US storefront (or the Allure report), save it as docs/media/storefront.png, and uncomment:
-![Basis storefront, RU and US markets](docs/media/storefront.png)
--->
+![Basis storefront: the localized RU catalog, prices in roubles](docs/media/storefront.png)
+
+That's the `/ru` market. The `/us` market serves the same catalog in English with USD pricing.
 
 ## Quick start
 
