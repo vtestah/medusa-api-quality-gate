@@ -27,26 +27,26 @@ export const options = {
   },
 };
 
-const storeParams = {
-  headers: {
-    "x-publishable-api-key": PUBLISHABLE_KEY,
-    Accept: "application/json",
-  },
-};
+function storeParams(endpoint) {
+  return {
+    headers: {
+      "x-publishable-api-key": PUBLISHABLE_KEY,
+      Accept: "application/json",
+    },
+    tags: { endpoint: endpoint },
+  };
+}
 
 export default function () {
-  const regions = http.get(`${BASE_URL}/store/regions`, {
-    ...storeParams,
-    tags: { endpoint: "store_regions" },
-  });
+  const regions = http.get(`${BASE_URL}/store/regions`, storeParams("store_regions"));
   check(regions, {
     "regions: status is 200": (r) => r.status === 200,
   });
 
-  const products = http.get(`${BASE_URL}/store/products?limit=20`, {
-    ...storeParams,
-    tags: { endpoint: "store_products" },
-  });
+  const products = http.get(
+    `${BASE_URL}/store/products?limit=20`,
+    storeParams("store_products"),
+  );
   check(products, {
     "products: status is 200": (r) => r.status === 200,
   });
