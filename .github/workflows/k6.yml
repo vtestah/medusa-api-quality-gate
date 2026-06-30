@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Bring up runtime (postgres + redis + medusa)
         run: docker compose up -d --build --wait postgres redis medusa
