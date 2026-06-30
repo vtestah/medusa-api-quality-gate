@@ -41,9 +41,13 @@ The base runs on every push with no runtime. The integration layer talks to the 
 
 ## Screenshot
 
-![Basis storefront: the localized RU catalog, prices in roubles](docs/media/storefront.png)
+One catalog, two markets. English and USD at `/us`:
 
-That's the `/ru` market. The `/us` market serves the same catalog in English with USD pricing.
+![Basis storefront, US market: catalog in English with USD pricing](docs/media/storefront-us.png)
+
+Russian and roubles at `/ru`, served by the Medusa Translation Module:
+
+![Basis storefront, RU market: catalog in Russian with RUB pricing](docs/media/storefront-ru.png)
 
 ## Quick start
 
