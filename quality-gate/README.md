@@ -54,7 +54,7 @@ CI (`.github/workflows/quality-gate.yml`) на каждый push/PR запуск
 
 ```bash
 python -m ruff check src tests     # стиль и импорты
-python -m mypy                     # strict-типизация (100% type hints)
+python -m mypy                     # strict-типизация
 python -m pytest -q                # тесты + покрытие (--cov-fail-under=70)
 ```
 
@@ -87,20 +87,15 @@ quality-gate/
     └── db/                 # PostgreSQL state verification
 ```
 
-Framework code belongs in `src/quality_gate/`; executable checks belong in `tests/`.
-Ad-hoc scratch snippets do not belong in the production test tree.
-
-Test directories are named by stable suite/risk type. Current directories are `smoke/`, `contract/`, `negative/`, `cart/`, `localization/`, and `db/`. A category can start as a marker and become its own directory only when it grows into a dedicated suite. Do not create folders for situational labels such as `sanity` or `preflight`; capture those in test names, docstrings, logs, or `-k` filters.
+Framework code lives in `src/quality_gate/`; executable checks live in `tests/`. Test directories are named by suite/risk type: `smoke/`, `contract/`, `negative/`, `cart/`, `localization/`, and `db/`.
 
 ## HTTP client conventions
 
-`StoreApiClient` injects the Medusa Store API `x-publishable-api-key` header from `Settings.store_headers`. Do not add WooCommerce-style OAuth helpers or hardcoded secrets for Store API checks.
+`StoreApiClient` injects the Medusa Store API `x-publishable-api-key` header from `Settings.store_headers`.
 
-Keep transport details in `BaseApiClient`: URL joining, shared session calls, timeout, optional expected status checks, and JSON payload submission. Service clients should pass endpoint paths and payloads into this layer instead of calling `requests.post(...)` directly.
+Transport details live in `BaseApiClient`: URL joining, shared session calls, timeout, optional expected-status checks, and JSON payload submission. Service clients pass endpoint paths and payloads into this layer rather than calling `requests.post(...)` directly. The base URL comes from `Settings`, and JSON payloads go through `post(..., json=payload)`.
 
-Read the Medusa base URL from `Settings`, not from hardcoded strings in tests. Send JSON payloads through `post(..., json=payload)`, not `data=payload` or manual `json.dumps(...)`.
-
-For endpoints where the expected status is part of the contract, pass `expected_status_code` into the client call:
+For endpoints where the expected status is part of the contract, the client call takes `expected_status_code`:
 
 ```python
 response = store_auth_client.request_customer_registration_token(

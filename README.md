@@ -3,7 +3,6 @@
 [![quality-gate CI](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml)
 [![integration](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/integration.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/integration.yml)
 [![e2e](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/e2e.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/e2e.yml)
-![coverage](https://img.shields.io/badge/coverage-76%25-brightgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12-3776AB)
 ![pytest](https://img.shields.io/badge/pytest-8.x-0A9EDC)
@@ -15,19 +14,19 @@
 
 An automated **API quality gate** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized for two markets — Russia (RU) and the United States (US).
 
-Two pillars:
+It has two test layers:
 
-- **API quality gate (primary)** — Python/pytest against the live Store API and PostgreSQL.
-- **UI E2E (second pillar)** — Playwright (TypeScript) against the localized RU/US storefront.
+- **API quality gate** — Python/pytest against the live Store API and PostgreSQL.
+- **UI E2E** — Playwright (TypeScript) against the localized RU/US storefront.
 
-## QA Highlights
+## What it covers
 
 - **Contract testing** — strict Store API validation with Pydantic v2 and round-trip (serialize → deserialize) checks.
 - **Property-based testing (Hypothesis)** — invariants for contracts, cart aggregation, client pre-flight, and fail-fast config; runs on every push without a runtime.
 - **Negative testing** — auth, malformed payloads, and boundary values against the Store API.
 - **Cart / checkout flows** — market-driven shipping for RU and US.
 - **Cross-layer state verification** — read-only PostgreSQL reconciliation of API state vs the database.
-- **Real SUT, not mocks** — tests target a live Medusa runtime brought up via Docker Compose, in local dev *and in CI*.
+- **Live system under test** — tests run against a real Medusa runtime brought up via Docker Compose, both locally and in CI.
 - **UI E2E (Playwright, TypeScript)** — Page Object Model + per-market projects against the localized RU/US storefront.
 - **CI quality gate** — ruff + mypy strict + pytest with coverage on every push (coverage floor enforced at `fail_under=70`).
 
@@ -80,7 +79,7 @@ quality-gate/
     └── db/            # cross-layer PostgreSQL reconciliation
 ```
 
-Quick commands (or use the [Makefile](#one-command-demo)):
+Quick commands (or use the [Makefile](#make-targets)):
 
 ```bash
 pnpm quality-gate:venv
@@ -91,13 +90,8 @@ pnpm quality-gate:test:localization
 
 ### Mutation testing
 
-The domain models are mutation-tested with [mutmut](https://github.com/boxed/mutmut) to verify the
-suite *catches* regressions rather than merely executing code. Running it against the contract
-round-trip core surfaced two real gaps — the `_diverging_fields` set-union logic and the
-`ContractValidationError` branch were never exercised by the happy-path property tests — which were
-closed with focused unit tests, raising that module from a 44% to a 69% kill rate (11/16 mutants).
-The remaining survivors are equivalent mutants (a `TypeVar` name, a type-only annotation, a
-`model_dump` mode string, error-message text) with no observable runtime behaviour.
+The domain models are mutation-tested with [mutmut](https://github.com/boxed/mutmut) to check that the
+tests fail when the implementation is broken, not just when it runs. Run it with:
 
 ```bash
 make mutation
@@ -130,17 +124,7 @@ make e2e       # install Playwright + run RU/US suites
 
 Reports include the Playwright HTML report plus traces, screenshots, and video retained on failure.
 
-## Why This Matters For QA
-
-- Contract tests need a real SUT, not hand-waved mocks.
-- State verification becomes possible once the backend and database are reproducible.
-- Market routing is a first-class runtime contract, not a cosmetic i18n toggle.
-- Region-driven pricing is testable independently from UI rendering.
-- The same seeded runtime backs both the API gate and the Playwright UI E2E.
-
-This is the backend analogue of testing a real frontend app with the correct store, router context, and seeded state instead of snapshotting empty shells.
-
-## One-Command Demo
+## Make targets
 
 ```bash
 make help     # list targets
@@ -164,11 +148,11 @@ medusa-api-quality-gate/
 │   ├── medusa/          # System under test: Medusa backend
 │   └── storefront/      # Next.js target UI (localized RU/US)
 ├── docker-compose.yml   # postgres + redis + medusa + storefront
-├── Makefile             # one-command demo
+├── Makefile             # common make targets
 └── README.md
 ```
 
-## Dual-Market Demo
+## Markets
 
 `Basis` is modeled as a fashion-basics storefront with one canonical catalog model and two public markets:
 
