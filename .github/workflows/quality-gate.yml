@@ -11,6 +11,10 @@ on:
       - "quality-gate/**"
       - ".github/workflows/quality-gate.yml"
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
 defaults:
   run:
     working-directory: quality-gate
@@ -32,6 +36,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+          cache-dependency-path: quality-gate/pyproject.toml
 
       - name: Install package with dev extras
         run: python -m pip install -e ".[dev]"
@@ -45,7 +50,42 @@ jobs:
       - name: Run tests with coverage
         # Live integration tests skip automatically when Medusa/PostgreSQL are
         # unavailable; the property and unit layers run on every push.
-        run: python -m pytest -q --cov-report=xml
+        run: python -m pytest -q --cov-report=xml --junitxml=junit.xml
+
+      - name: Test summary
+        if: always()
+        continue-on-error: true
+        env:
+          SUMMARY_LABEL: "quality-gate (py${{ matrix.python-version }})"
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import glob
+          import os
+          import xml.etree.ElementTree as ET
+
+          label = os.environ.get("SUMMARY_LABEL", "tests")
+          files = glob.glob("junit.xml")
+          if not files:
+              print(f"### {label}\n\nNo JUnit results found.")
+              raise SystemExit(0)
+
+          tests = failures = errors = skipped = 0
+          duration = 0.0
+          for path in files:
+              for suite in ET.parse(path).getroot().iter("testsuite"):
+                  tests += int(suite.get("tests", 0))
+                  failures += int(suite.get("failures", 0))
+                  errors += int(suite.get("errors", 0))
+                  skipped += int(suite.get("skipped", 0))
+                  duration += float(suite.get("time", 0) or 0)
+
+          passed = tests - failures - errors - skipped
+          print(
+              f"### {label}\n\n"
+              f"{tests} tests — {passed} passed, {failures} failed, "
+              f"{errors} errors, {skipped} skipped in {duration:.1f}s"
+          )
+          PY
 
       - name: Upload coverage report
         if: always()
@@ -53,4 +93,12 @@ jobs:
         with:
           name: coverage-${{ matrix.python-version }}
           path: quality-gate/coverage.xml
+          if-no-files-found: ignore
+
+      - name: Upload test results (JUnit)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.python-version }}
+          path: quality-gate/junit.xml
           if-no-files-found: ignore

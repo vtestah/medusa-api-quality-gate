@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Python quality gate (pyproject.toml in quality-gate/).
+  - package-ecosystem: pip
+    directory: /quality-gate
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # Playwright UI E2E (package.json in e2e/).
+  - package-ecosystem: npm
+    directory: /e2e
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # GitHub Actions used by the workflows in .github/workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

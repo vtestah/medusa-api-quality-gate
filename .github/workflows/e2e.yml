@@ -6,7 +6,14 @@ name: e2e (Playwright)
 on:
   push:
     branches: [main, master]
+  schedule:
+    # Ночной прогон Playwright против RU/US storefront (UTC).
+    - cron: "30 3 * * *"
   workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
 
 jobs:
   e2e:
@@ -24,6 +31,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Resolve pnpm store path
+        continue-on-error: true
+        run: echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_ENV"
+
+      - name: Cache pnpm store
+        continue-on-error: true
+        if: env.PNPM_STORE_PATH != ''
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PNPM_STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('e2e/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache Playwright browsers
+        continue-on-error: true
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('e2e/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Bring up backend runtime (postgres + redis + medusa)
         run: docker compose up -d --build --wait postgres redis medusa

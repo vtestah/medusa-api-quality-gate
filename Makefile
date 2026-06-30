@@ -4,7 +4,7 @@
 SHELL := /bin/bash
 VENV := .venv/bin
 
-.PHONY: help up down logs seed setup test smoke lint mutation e2e clean
+.PHONY: help up down logs seed setup test smoke lint ci mutation e2e clean
 
 help: ## Список целей
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -35,6 +35,9 @@ smoke: ## Быстрые smoke-тесты
 lint: ## ruff + mypy strict (как в CI)
 	cd quality-gate && ../$(VENV)/python -m ruff check src tests
 	cd quality-gate && ../$(VENV)/python -m mypy
+
+ci: lint ## Локальный CI-гейт: lint + pytest с покрытием (зеркалит quality-gate.yml)
+	cd quality-gate && ../$(VENV)/python -m pytest -q --cov-report=xml --junitxml=junit.xml
 
 mutation: ## Mutation testing (mutmut) по доменным моделям
 	cd quality-gate && ../$(VENV)/python -m mutmut run --paths-to-mutate src/quality_gate/models/ --runner "../$(VENV)/python -m pytest -x -q" || true

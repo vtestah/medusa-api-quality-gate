@@ -1,0 +1,71 @@
+name: k6 (smoke)
+
+# Best-effort, non-blocking: поднимает рантайм как в integration.yml, ставит k6
+# и гоняет k6/smoke.js против живого Store API.
+# Запускается по расписанию и вручную (не на push), поэтому не влияет на required checks.
+
+on:
+  schedule:
+    # Ночной k6 smoke против живого рантайма (UTC).
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  k6:
+    name: k6 smoke against live Store API
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bring up runtime (postgres + redis + medusa)
+        run: docker compose up -d --build --wait postgres redis medusa
+
+      - name: Seed demo data
+        run: docker compose exec -T medusa pnpm seed
+
+      - name: Resolve publishable key from the database
+        id: key
+        run: |
+          KEY="$(docker compose exec -T postgres \
+            psql -U postgres -d medusa -At \
+            -c "select token from api_key where type = 'publishable' limit 1;")"
+          test -n "$KEY" || { echo "::error::no publishable key found after seed"; exit 1; }
+          echo "value=$KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Install k6
+        run: |
+          K6_VERSION=v0.50.0
+          curl -fsSL "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" \
+            | tar -xz
+          sudo install "k6-${K6_VERSION}-linux-amd64/k6" /usr/local/bin/k6
+          k6 version
+
+      - name: Run k6 smoke
+        env:
+          BASE_URL: http://localhost:9000
+          MEDUSA_BASE_URL: http://localhost:9000
+          PUBLISHABLE_KEY: ${{ steps.key.outputs.value }}
+        run: |
+          if [ -f k6/smoke.js ]; then
+            k6 run \
+              -e BASE_URL="$BASE_URL" \
+              -e MEDUSA_BASE_URL="$MEDUSA_BASE_URL" \
+              -e PUBLISHABLE_KEY="$PUBLISHABLE_KEY" \
+              k6/smoke.js
+          else
+            echo "::warning::k6/smoke.js not found; skipping k6 run"
+          fi
+
+      - name: Medusa logs (on failure)
+        if: failure()
+        run: docker compose logs --tail=200 medusa
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
