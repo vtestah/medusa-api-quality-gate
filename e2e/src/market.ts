@@ -16,7 +16,7 @@ export const MARKETS: Record<MarketCode, MarketProfile> = {
   ru: {
     code: "ru",
     path: "/ru",
-    locale: "ru-RU",
+    locale: "ru",
     currency: "RUB",
     currencySymbol: "₽",
     shippingMethods: ["Курьер", "ПВЗ", "Самовывоз"],
@@ -24,7 +24,7 @@ export const MARKETS: Record<MarketCode, MarketProfile> = {
   us: {
     code: "us",
     path: "/us",
-    locale: "en-US",
+    locale: "en",
     currency: "USD",
     currencySymbol: "$",
     shippingMethods: ["Standard Shipping", "Express Shipping"],
