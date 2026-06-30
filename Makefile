@@ -37,7 +37,7 @@ lint: ## ruff + mypy strict (как в CI)
 	cd quality-gate && ../$(VENV)/python -m mypy
 
 e2e: ## Playwright UI E2E (RU/US storefront); требует поднятый 'make up'
-	cd e2e && pnpm install && pnpm exec playwright install chromium && pnpm test
+	cd e2e && pnpm install --ignore-workspace && pnpm exec playwright install chromium && pnpm test
 
 clean: ## Убрать локальные кэши тестов
 	rm -rf quality-gate/.pytest_cache quality-gate/.mypy_cache quality-gate/.ruff_cache quality-gate/reports

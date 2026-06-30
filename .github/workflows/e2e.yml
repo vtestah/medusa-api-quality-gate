@@ -42,7 +42,7 @@ jobs:
       - name: Install Playwright + browser
         working-directory: e2e
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install --ignore-workspace --no-frozen-lockfile
           pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright (RU + US)
