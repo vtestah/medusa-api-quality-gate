@@ -8,35 +8,17 @@ region, assert the cart's ``currency_code`` matches the configured market curren
 exactly equal the configured shipping-method set, and select one available method,
 confirming it is recorded on the returned cart. All assertions use Pydantic models,
 never raw dict keys.
+
+The currency-to-region lookup comes from the shared ``resolve_region_id`` fixture
+(defined once in ``conftest``), so it is not duplicated here.
 """
+
+from collections.abc import Callable
 
 import pytest
 
-from quality_gate.clients import StoreCartClient, StoreRegionsClient, StoreShippingClient
+from quality_gate.clients import StoreCartClient, StoreShippingClient
 from quality_gate.config import Settings
-
-
-def _resolve_region_id(
-    store_regions_client: StoreRegionsClient,
-    settings: Settings,
-    market_code: str,
-) -> str:
-    """Resolve a Medusa region id for a market by matching its currency code.
-
-    Looks up the expected currency for ``market_code`` from ``settings.markets``
-    and returns the id of the first region whose ``currency_code`` matches. Skips
-    the test (rather than failing) when no matching region is seeded.
-    """
-
-    expected_currency = settings.markets[market_code].currency_code
-    regions = store_regions_client.list_regions().regions
-    for region in regions:
-        if region.currency_code == expected_currency:
-            return region.id
-    pytest.skip(
-        f"No region found for market {market_code!r} "
-        f"(currency {expected_currency!r}) in the live runtime"
-    )
 
 
 @pytest.mark.cart
@@ -44,7 +26,7 @@ def _resolve_region_id(
 def test_cart_currency_matches_market(
     runtime_ready: None,
     store_cart_client: StoreCartClient,
-    store_regions_client: StoreRegionsClient,
+    resolve_region_id: Callable[[str], str],
     settings: Settings,
     market_code: str,
 ) -> None:
@@ -57,7 +39,7 @@ def test_cart_currency_matches_market(
     """
 
     market = settings.markets[market_code]
-    region_id = _resolve_region_id(store_regions_client, settings, market_code)
+    region_id = resolve_region_id(market_code)
 
     cart = store_cart_client.create_cart(region_id=region_id)
 
@@ -70,7 +52,7 @@ def test_shipping_options_match_market_methods(
     runtime_ready: None,
     store_cart_client: StoreCartClient,
     store_shipping_client: StoreShippingClient,
-    store_regions_client: StoreRegionsClient,
+    resolve_region_id: Callable[[str], str],
     settings: Settings,
     market_code: str,
 ) -> None:
@@ -84,7 +66,7 @@ def test_shipping_options_match_market_methods(
     """
 
     market = settings.markets[market_code]
-    region_id = _resolve_region_id(store_regions_client, settings, market_code)
+    region_id = resolve_region_id(market_code)
 
     cart = store_cart_client.create_cart(region_id=region_id)
     options_response = store_shipping_client.list_shipping_options(cart_id=cart.id)
@@ -100,8 +82,7 @@ def test_selected_shipping_method_recorded_on_cart(
     runtime_ready: None,
     store_cart_client: StoreCartClient,
     store_shipping_client: StoreShippingClient,
-    store_regions_client: StoreRegionsClient,
-    settings: Settings,
+    resolve_region_id: Callable[[str], str],
     market_code: str,
 ) -> None:
     """Selecting an available shipping method records it on the returned cart.
@@ -112,7 +93,7 @@ def test_selected_shipping_method_recorded_on_cart(
     option id.
     """
 
-    region_id = _resolve_region_id(store_regions_client, settings, market_code)
+    region_id = resolve_region_id(market_code)
 
     cart = store_cart_client.create_cart(region_id=region_id)
     options_response = store_shipping_client.list_shipping_options(cart_id=cart.id)

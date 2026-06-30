@@ -9,6 +9,7 @@ from quality_gate.models.cart import (
     ShippingOption,
     ShippingOptionsResponse,
     aggregate_line_items,
+    assert_cart_totals_consistent,
 )
 from quality_gate.models.categories import CategoriesResponse, StoreProductCategory
 from quality_gate.models.customers import StoreCustomer, StoreCustomerResponse
@@ -35,4 +36,5 @@ __all__ = [
     "StoreProductCategory",
     "StoreRegion",
     "aggregate_line_items",
+    "assert_cart_totals_consistent",
 ]

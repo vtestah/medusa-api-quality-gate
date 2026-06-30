@@ -42,6 +42,7 @@ markers = [
   "bootstrap: проверки локального Python bootstrap и окружения",
   "cart: проверки cart и checkout flows (создание корзины, line items, shipping)",
   "admin: проверки Admin API (аутентификация и авторизация)",
+  "negative: негативные сценарии ввода и контракты ошибок (4xx/доступ)",
 ]
 
 [tool.setuptools.packages.find]

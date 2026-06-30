@@ -20,6 +20,8 @@ class StoreProductsClient(StoreApiClient):
         self,
         *,
         handle: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
         locale: str | None = None,
         fields: str | None = None,
         extra_params: Mapping[str, Any] | None = None,
@@ -27,6 +29,10 @@ class StoreProductsClient(StoreApiClient):
         params: dict[str, Any] = {}
         if handle:
             params["handle"] = handle
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
         if fields:
             params["fields"] = fields
         if extra_params:

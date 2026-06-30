@@ -1,6 +1,6 @@
 """Shared pytest fixtures for the Medusa quality gate."""
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 
 import pytest
 import requests
@@ -189,6 +189,25 @@ def _resolve_region_id(
         f"No region found for market {market_code!r} "
         f"(currency {expected_currency!r}) in the live runtime"
     )
+
+
+@pytest.fixture
+def resolve_region_id(
+    store_regions_client: StoreRegionsClient,
+    settings: Settings,
+) -> Callable[[str], str]:
+    """Return a callable resolving a region id for a market code by currency.
+
+    Single source of truth shared by the cart fixtures and the market-parametrized
+    shipping tests, so the currency-to-region lookup is not duplicated per module.
+    The returned callable skips (rather than fails) when no matching region is
+    seeded in the live runtime.
+    """
+
+    def _resolve(market_code: str) -> str:
+        return _resolve_region_id(store_regions_client, settings, market_code)
+
+    return _resolve
 
 
 @pytest.fixture

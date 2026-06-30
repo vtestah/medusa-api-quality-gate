@@ -13,12 +13,21 @@ this module so they are easy to adjust against a real runtime:
 
 ``PostgresDb`` runs queries with psycopg3 where sequence params bind to ``%s``
 positional placeholders, so every query below uses ``%s`` with a tuple.
+
+Scope note (checkout/order reconciliation): completing an order through the Store
+API requires an authorized payment session from a configured payment provider,
+which the demo seed does not guarantee. Rather than depend on a payment provider,
+this reconciler verifies cart and line-item state cross-layer (Store API vs
+PostgreSQL rows), which is deterministic and provider-independent.
 """
 
 from quality_gate.db.postgres import PostgresDb
 
 _COUNT_CARTS_BY_ID = "SELECT count(*) FROM cart WHERE id = %s"
 _COUNT_LINE_ITEMS = "SELECT count(*) FROM cart_line_item WHERE cart_id = %s"
+_SUM_LINE_ITEM_QUANTITIES = (
+    "SELECT coalesce(sum(quantity), 0) FROM cart_line_item WHERE cart_id = %s"
+)
 _FETCH_CART_REGION_CURRENCY = (
     "SELECT r.currency_code "
     "FROM cart c "
@@ -41,6 +50,17 @@ class DbReconciler:
     def count_line_items(self, cart_id: str) -> int:
         """Return the number of line item rows for the given cart."""
         value = self._db.fetch_value(_COUNT_LINE_ITEMS, (cart_id,))
+        return int(value) if value is not None else 0
+
+    def sum_line_item_quantities(self, cart_id: str) -> int:
+        """Return the summed quantity across all line-item rows for the cart.
+
+        Complements :meth:`count_line_items` (distinct rows) by reconciling the
+        total units recorded in PostgreSQL against the summed quantities in the
+        Store API cart response. ``coalesce`` yields ``0`` for a cart with no
+        line-item rows.
+        """
+        value = self._db.fetch_value(_SUM_LINE_ITEM_QUANTITIES, (cart_id,))
         return int(value) if value is not None else 0
 
     def fetch_cart_region_currency(self, cart_id: str) -> str | None:

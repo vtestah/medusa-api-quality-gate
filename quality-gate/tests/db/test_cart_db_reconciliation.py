@@ -85,3 +85,34 @@ def test_cart_region_currency_matches_api(
         f"expected {expected_currency!r} (from API), "
         f"actual {actual_currency!r} (from PostgreSQL region join)"
     )
+
+
+@pytest.mark.db
+def test_total_line_item_quantity_matches_db_sum(
+    ru_cart: Cart,
+    demo_variant_id: str,
+    store_cart_client: StoreCartClient,
+    db_reconciler: DbReconciler,
+) -> None:
+    """Summed line-item units in PostgreSQL equal the summed quantity in the API cart.
+
+    Adds the demo variant twice with distinct quantities. Medusa aggregates repeat
+    additions of the same variant into a single line item, so the API and the DB
+    must agree on the total number of units, not just the distinct row count.
+    """
+
+    store_cart_client.add_line_item(
+        cart_id=ru_cart.id, variant_id=demo_variant_id, quantity=2
+    )
+    updated_cart = store_cart_client.add_line_item(
+        cart_id=ru_cart.id, variant_id=demo_variant_id, quantity=3
+    )
+
+    expected_units = sum(item.quantity for item in updated_cart.items)
+    actual_units = db_reconciler.sum_line_item_quantities(ru_cart.id)
+
+    assert actual_units == expected_units, (
+        f"line-item unit-sum mismatch for cart id {ru_cart.id!r}: "
+        f"expected {expected_units} (from API response), "
+        f"actual {actual_units} (from PostgreSQL)"
+    )
