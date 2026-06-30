@@ -1,7 +1,7 @@
 name: e2e (Playwright)
 
 # Поднимает полный рантайм (включая storefront), сидит демо-данные, перезапускает
-# storefront с реальным publishable key и гоняет Playwright против RU/US витрины.
+# storefront с реальным publishable key и гоняет Playwright против RU/US storefront.
 
 on:
   push:

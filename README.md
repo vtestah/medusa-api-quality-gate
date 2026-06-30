@@ -13,7 +13,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)
 ![Redis](https://img.shields.io/badge/Redis-8-DC382D)
 
-Public portfolio repository for a **Senior SDET** track focused on **API quality gates** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized as a dual-market demo: Russia first, United States second.
+An automated **API quality gate** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized for two markets — Russia (RU) and the United States (US).
 
 Two pillars:
 
@@ -350,10 +350,10 @@ Delivered:
 - Property-based tests for pure logic and CI quality gates (ruff, mypy strict, coverage)
 - Integration tests executed live in CI (runtime brought up in the pipeline)
 - Playwright (TypeScript) UI E2E against the localized RU/US storefront (smoke, localization, cart shipping)
+- Admin API authentication and authorization checks (live + mocked unit)
+- Mutation testing (mutmut) over the domain models
 
 Next:
 
-- Admin API and auth-heavy flows
-- Schemathesis fuzzing driven by the Medusa OpenAPI schema
-- Mutation testing (mutmut) over models and clients
+- Schemathesis fuzzing driven by an OpenAPI schema
 - Public Allure report on GitHub Pages
