@@ -9,6 +9,9 @@ export default defineConfig<TestOptions>({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  // The storefront runs in dev mode, which recompiles routes on demand and gets
+  // slow under heavy concurrency. Bound the workers so it stays responsive.
+  workers: process.env.CI ? 2 : 4,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL,

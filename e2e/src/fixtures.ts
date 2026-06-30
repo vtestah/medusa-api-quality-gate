@@ -2,6 +2,7 @@ import { test as base } from "@playwright/test";
 import { MARKETS, type MarketCode, type MarketProfile } from "./market";
 import { HomePage } from "./pages/home.page";
 import { StorePage } from "./pages/store.page";
+import { ProductPage } from "./pages/product.page";
 import { CartPage } from "./pages/cart.page";
 
 // Per-project option: which market this run targets.
@@ -13,6 +14,7 @@ export interface TestFixtures {
   market: MarketProfile;
   homePage: HomePage;
   storePage: StorePage;
+  productPage: ProductPage;
   cartPage: CartPage;
 }
 
@@ -26,6 +28,9 @@ export const test = base.extend<TestOptions & TestFixtures>({
   },
   storePage: async ({ page, market }, use) => {
     await use(new StorePage(page, market));
+  },
+  productPage: async ({ page, market }, use) => {
+    await use(new ProductPage(page, market));
   },
   cartPage: async ({ page, market }, use) => {
     await use(new CartPage(page, market));

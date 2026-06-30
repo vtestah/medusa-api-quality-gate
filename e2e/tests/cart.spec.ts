@@ -1,26 +1,19 @@
-import { test } from "../src/fixtures";
+import { test, expect } from "../src/fixtures";
 
-// Cart/checkout flow: add the first catalog product, then assert the
-// market-specific shipping options appear at the cart/checkout step.
-// Marked test.fixme: the Medusa storefront requires selecting a variant before
-// the add-to-cart button enables, and the exact selectors must be confirmed
-// against the live DOM (`make up && make e2e`). The market shipping *contract*
-// is already covered by the Python API suite (tests/cart/test_cart_shipping_markets).
-test.describe("cart & market-driven shipping", () => {
-  test.fixme("market shipping options are offered for the cart", async ({
-    storePage,
-    cartPage,
-    page,
-  }) => {
-    await storePage.open();
-    await storePage.firstProductLink().click();
+// Add a product to the cart and confirm the cart count updates. The
+// market-specific shipping contract (RU vs US methods) is covered by the Python
+// API suite (tests/cart/test_cart_shipping_markets); this spec exercises the
+// storefront add-to-cart flow across both markets.
+test.describe("cart", () => {
+  test("adding a product updates the cart count", async ({ productPage }) => {
+    await productPage.open("basis-heavy-tee");
 
-    await page
-      .getByRole("button", { name: /(в корзину|добавить|add to cart|add to bag)/i })
-      .first()
-      .click();
+    await productPage.addFirstAvailableVariantToCart();
 
-    await cartPage.open();
-    await cartPage.expectMarketShippingMethods();
+    // The header cart badge updates after a server revalidation, which is slow
+    // in dev mode, so give it room beyond the default assertion timeout.
+    await expect(productPage.navCartLink()).toContainText("(1)", {
+      timeout: 20000,
+    });
   });
 });
