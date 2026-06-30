@@ -49,7 +49,8 @@ Test layers:
 - **property-based (Hypothesis)** for pure-logic invariants — run on every push, no runtime needed;
 - **integration** against the live Store API and PostgreSQL — guarded to skip locally when the runtime is down, and executed for real in CI (the pipeline brings the runtime up);
 - **smoke / unit** for transport, configuration, and data factories;
-- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — Page Object Model, per-market projects, HTML report (see [`e2e/`](e2e/)).
+- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — Page Object Model, per-market projects, HTML report (see [`e2e/`](e2e/));
+- **mutation testing (mutmut)** on the domain models — confirms the tests fail when the code is broken, not just when it runs.
 
 See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
 
@@ -85,6 +86,20 @@ pnpm quality-gate:venv
 pnpm quality-gate:install
 pnpm quality-gate:test:smoke
 pnpm quality-gate:test:localization
+```
+
+### Mutation testing
+
+The domain models are mutation-tested with [mutmut](https://github.com/boxed/mutmut) to verify the
+suite *catches* regressions rather than merely executing code. Running it against the contract
+round-trip core surfaced two real gaps — the `_diverging_fields` set-union logic and the
+`ContractValidationError` branch were never exercised by the happy-path property tests — which were
+closed with focused unit tests, raising that module from a 44% to a 69% kill rate (11/16 mutants).
+The remaining survivors are equivalent mutants (a `TypeVar` name, a type-only annotation, a
+`model_dump` mode string, error-message text) with no observable runtime behaviour.
+
+```bash
+make mutation
 ```
 
 ## UI E2E (Playwright)

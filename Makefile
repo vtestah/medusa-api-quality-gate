@@ -4,7 +4,7 @@
 SHELL := /bin/bash
 VENV := .venv/bin
 
-.PHONY: help up down logs seed setup test smoke lint e2e clean
+.PHONY: help up down logs seed setup test smoke lint mutation e2e clean
 
 help: ## Список целей
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -35,6 +35,10 @@ smoke: ## Быстрые smoke-тесты
 lint: ## ruff + mypy strict (как в CI)
 	cd quality-gate && ../$(VENV)/python -m ruff check src tests
 	cd quality-gate && ../$(VENV)/python -m mypy
+
+mutation: ## Mutation testing (mutmut) по доменным моделям
+	cd quality-gate && ../$(VENV)/python -m mutmut run --paths-to-mutate src/quality_gate/models/ --runner "../$(VENV)/python -m pytest -x -q" || true
+	cd quality-gate && ../$(VENV)/python -m mutmut results
 
 e2e: ## Playwright UI E2E (RU/US storefront); требует поднятый 'make up'
 	cd e2e && pnpm install --ignore-workspace && pnpm exec playwright install chromium && pnpm test

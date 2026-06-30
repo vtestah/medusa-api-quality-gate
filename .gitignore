@@ -20,3 +20,7 @@ quality-gate/reports/
 .coverage.*
 coverage.xml
 htmlcov/
+
+# Mutation testing (mutmut)
+.mutmut-cache
+*.bak
