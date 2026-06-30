@@ -25,20 +25,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Bring up runtime (postgres + redis + medusa + storefront)
-        run: docker compose up -d --build --wait postgres redis medusa storefront
+      - name: Bring up backend runtime (postgres + redis + medusa)
+        run: docker compose up -d --build --wait postgres redis medusa
 
       - name: Seed demo data
         run: docker compose exec -T medusa pnpm seed
 
-      - name: Restart storefront with the seeded publishable key
+      - name: Start storefront with the seeded publishable key
         run: |
           KEY="$(docker compose exec -T postgres \
             psql -U postgres -d medusa -At \
             -c "select token from api_key where type = 'publishable' limit 1;")"
           test -n "$KEY" || { echo "::error::no publishable key after seed"; exit 1; }
-          STOREFRONT_MEDUSA_PUBLISHABLE_KEY="$KEY" docker compose up -d storefront
-          sleep 15
+          STOREFRONT_MEDUSA_PUBLISHABLE_KEY="$KEY" docker compose up -d --build --wait storefront
 
       - name: Install Playwright + browser
         working-directory: e2e
