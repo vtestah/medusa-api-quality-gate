@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 
 export class HomePage extends BasePage {
@@ -14,5 +14,16 @@ export class HomePage extends BasePage {
   async openRootAndExpectMarketRedirect(): Promise<void> {
     await this.page.goto("/");
     await expect(this.page).toHaveURL(/\/(ru|us)(\/|$|\?)/);
+  }
+
+  /** Hero headline; role-based so it holds across the RU/US locales. */
+  heading(): Locator {
+    return this.page.getByRole("heading", { level: 1 }).first();
+  }
+
+  /** Hero call-to-action into the catalog. Targeted by href suffix so it does
+   *  not depend on the localized button label. */
+  catalogLink(): Locator {
+    return this.page.locator('a[href$="/store"]').first();
   }
 }
