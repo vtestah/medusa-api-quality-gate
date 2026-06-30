@@ -1,6 +1,6 @@
 """Negative input-validation integration tests for the Medusa Store API.
 
-A single file grouped by risk type (negative input validation) — no
+A single file grouped by risk type (negative input validation), with no
 ad-hoc ``sanity``/``preflight`` directories. Every test runs against the live
 Medusa runtime and is guarded by ``runtime_ready`` so it skips cleanly when the
 runtime is down. All response/error bodies are parsed through Pydantic models

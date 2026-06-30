@@ -1,9 +1,9 @@
 # Contributing
 
-Working notes for developing in this repository. The repo has two test layers:
+Working notes for hacking on this repo. There are two test layers:
 
-- `quality-gate/` — Python/pytest API quality gate against the live Medusa Store API and PostgreSQL.
-- `e2e/` — Playwright (TypeScript) UI E2E against the localized RU/US storefront.
+- `quality-gate/`: a Python/pytest API quality gate that runs against the live Medusa Store API and PostgreSQL.
+- `e2e/`: Playwright UI end-to-end tests in TypeScript, run against the localized RU/US storefront.
 
 ## Prerequisites
 
@@ -77,12 +77,12 @@ Playwright config; override the host with `STOREFRONT_BASE_URL` if needed.
 
 ## CI
 
-- `quality-gate.yml` — fast gate (ruff + mypy strict + pytest with coverage) on
-  pushes and PRs that touch `quality-gate/**`. This is the gate to keep green.
-- `integration.yml` — brings the runtime up, seeds data, resolves the
-  publishable key from the database, and runs the full suite (push, nightly
+- `quality-gate.yml`: the fast gate (ruff + mypy strict + pytest with coverage). It runs on
+  pushes and PRs that touch `quality-gate/**`. Keep this one green.
+- `integration.yml` brings the runtime up, seeds data, resolves the
+  publishable key from the database, then runs the full suite (push, nightly
   schedule, manual dispatch).
-- `e2e.yml` — Playwright RU/US against the live storefront (push, nightly
+- `e2e.yml` runs Playwright RU/US against the live storefront (push, nightly
   schedule, manual dispatch).
 
 JUnit results and coverage are uploaded as build artifacts, and a short test

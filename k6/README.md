@@ -5,9 +5,9 @@ endpoints the storefront depends on (`/store/regions`, `/store/products`) plus
 `/health`. They are a lightweight performance baseline, not a full load-testing
 rig.
 
-- `smoke.js` — 1 VU, a handful of iterations. Confirms the API answers correctly
-  and quickly. Fails on any error (`http_req_failed: rate==0`).
-- `load.js` — ramps to 10 VUs and holds, with error-rate and p95-latency
+- `smoke.js`: 1 VU, a handful of iterations. It confirms the API answers correctly
+  and quickly, and fails on any error (`http_req_failed: rate==0`).
+- `load.js` ramps to 10 VUs and holds, with error-rate and p95-latency
   thresholds (including tighter per-endpoint budgets).
 
 ## Prerequisites
@@ -68,5 +68,5 @@ into a pipeline later:
 - `load.js`: `http_req_failed < 1%`, `http_req_duration p95 < 800ms`, plus
   per-endpoint p95 budgets.
 
-The VU counts, stages, and latency budgets are starting points — tune them to the
+The VU counts, stages, and latency budgets are starting points. Tune them to the
 host under test.

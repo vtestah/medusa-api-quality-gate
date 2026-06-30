@@ -12,23 +12,23 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)
 ![Redis](https://img.shields.io/badge/Redis-8-DC382D)
 
-An automated **API quality gate** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL + Redis**; the target UI is a **Next.js** storefront localized for two markets — Russia (RU) and the United States (US).
+An automated **API quality gate** for a headless commerce stack. The system under test is a real **Medusa.js** runtime backed by **PostgreSQL** and **Redis**, with a **Next.js** storefront localized for two markets: Russia (RU) and the United States (US).
 
-It has two test layers:
+There are two test layers:
 
-- **API quality gate** — Python/pytest against the live Store API and PostgreSQL.
-- **UI E2E** — Playwright (TypeScript) against the localized RU/US storefront.
+- **API quality gate**: Python/pytest against the live Store API and PostgreSQL.
+- **UI E2E**: Playwright (TypeScript) against the localized RU/US storefront.
 
 ## What it covers
 
-- **Contract testing** — strict Store API validation with Pydantic v2 and round-trip (serialize → deserialize) checks.
-- **Property-based testing (Hypothesis)** — invariants for contracts, cart aggregation, client pre-flight, and fail-fast config; runs on every push without a runtime.
-- **Negative testing** — auth, malformed payloads, and boundary values against the Store API.
-- **Cart / checkout flows** — market-driven shipping for RU and US.
-- **Cross-layer state verification** — read-only PostgreSQL reconciliation of API state vs the database.
-- **Live system under test** — tests run against a real Medusa runtime brought up via Docker Compose, both locally and in CI.
-- **UI E2E (Playwright, TypeScript)** — Page Object Model + per-market projects against the localized RU/US storefront.
-- **CI quality gate** — ruff + mypy strict + pytest with coverage on every push (coverage floor enforced at `fail_under=70`).
+- **Contract testing**: strict Store API validation with Pydantic v2 and round-trip (serialize, then re-parse) checks.
+- **Property-based testing (Hypothesis)**: invariants for contracts, cart aggregation, client pre-flight, and fail-fast config. These run on every push, no runtime needed.
+- **Negative testing**: auth, malformed payloads, and boundary values against the Store API.
+- **Cart and checkout flows**: market-driven shipping for RU and US.
+- **Cross-layer state verification**: read-only PostgreSQL reconciliation of API state against the database.
+- **Live system under test**: tests run against a real Medusa runtime brought up with Docker Compose, locally and in CI.
+- **UI E2E (Playwright, TypeScript)**: Page Object Model and per-market projects against the localized RU/US storefront.
+- **CI quality gate**: ruff, mypy strict, and pytest with coverage on every push (the coverage floor is set by `fail_under=70`).
 
 ## Testing Strategy
 
@@ -45,11 +45,7 @@ flowchart TB
 
 Test layers:
 
-- **property-based (Hypothesis)** for pure-logic invariants — run on every push, no runtime needed;
-- **integration** against the live Store API and PostgreSQL — guarded to skip locally when the runtime is down, and executed for real in CI (the pipeline brings the runtime up);
-- **smoke / unit** for transport, configuration, and data factories;
-- **UI E2E (Playwright, TypeScript)** against the localized RU/US storefront — Page Object Model, per-market projects, HTML report (see [`e2e/`](e2e/));
-- **mutation testing (mutmut)** on the domain models — confirms the tests fail when the code is broken, not just when it runs.
+The base runs on every push with no runtime. The integration layer talks to the live Store API and PostgreSQL; those tests skip locally when the runtime is down and run for real in CI, where the pipeline brings the stack up first. Mutation testing (mutmut) over the domain models checks that the tests actually fail when the code is broken, not only when it runs.
 
 See [`quality-gate/README.md`](quality-gate/README.md) for the full testing strategy.
 
@@ -99,7 +95,7 @@ make mutation
 
 ## UI E2E (Playwright)
 
-A TypeScript Playwright suite in `e2e/` drives the localized storefront as the user does and mirrors the runtime proof points (market routing, localized chrome, currency, market shipping).
+A TypeScript Playwright suite in `e2e/` drives the localized storefront the way a user would, and checks the same behaviors the API layer relies on: market routing, localized chrome, currency, and shipping.
 
 ```text
 e2e/
@@ -239,7 +235,7 @@ docker compose exec medusa pnpm exec medusa user -e admin@example.com -p superse
 - syncs the newly generated publishable API key into `.env` and `apps/storefront/.env.local`
 - restarts the storefront with the current key
 
-## README-Driven Verification
+## Manual checks
 
 ### HTTP checks
 
@@ -336,8 +332,8 @@ Delivered:
 - Playwright (TypeScript) UI E2E against the localized RU/US storefront (smoke, localization, cart shipping)
 - Admin API authentication and authorization checks (live + mocked unit)
 - Mutation testing (mutmut) over the domain models
+- [Allure report published to GitHub Pages](https://vtestah.github.io/medusa-api-quality-gate/) (built by CI)
 
 Next:
 
 - Schemathesis fuzzing driven by an OpenAPI schema
-- Public Allure report on GitHub Pages

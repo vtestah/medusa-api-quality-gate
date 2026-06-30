@@ -1,4 +1,4 @@
-# medusa-api-quality-gate — локальный рантайм и тесты одной командой.
+# medusa-api-quality-gate: локальный рантайм и тесты одной командой.
 # Всё делегируется уже существующим pnpm-скриптам и docker compose.
 
 SHELL := /bin/bash

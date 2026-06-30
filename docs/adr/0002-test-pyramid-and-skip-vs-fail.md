@@ -9,7 +9,7 @@ and integration checks that need a live Medusa runtime and PostgreSQL. We want f
 reliable feedback on every push, but we also want real integration coverage.
 
 Running everything against a live runtime on every push is slow and brittle, and it
-fails the moment the local stack is down — which conflates "infrastructure is
+fails the moment the local stack is down, which conflates "infrastructure is
 unavailable" with "a check has actually failed". Those two outcomes need to be
 distinguishable.
 
@@ -18,10 +18,11 @@ distinguishable.
 Shape the suite as a pyramid and separate infrastructure availability from test
 outcome.
 
-- **Base** — property-based (Hypothesis) plus unit/smoke tests. No network, run on
+- **Base**: property-based (Hypothesis) plus unit/smoke tests, no network, run on
   every push.
-- **Middle** — live integration: contract, negative, cart, db, localization, admin.
-- **Cap** — Playwright UI E2E over the localized storefront.
+- The **middle** is live integration: contract, negative, cart, db, localization,
+  and admin.
+- A thin **cap** of Playwright UI E2E sits over the localized storefront.
 
 Runtime-bound tests depend on guard fixtures: `runtime_ready` probes
 `/health` and skips the test when Medusa is unreachable; `db_connection` skips when

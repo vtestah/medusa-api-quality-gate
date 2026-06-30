@@ -22,7 +22,7 @@ def assert_response_within_sla(
 
     Reads :attr:`requests.Response.elapsed` (populated by ``requests`` for every
     sent request), so the measurement reflects the request round-trip rather than
-    any client-side timer. The threshold is intentionally lenient — this is a soft
+    any client-side timer. The threshold is intentionally lenient. This is a soft
     SLA to surface pathological latency, not a strict performance benchmark.
 
     Args:

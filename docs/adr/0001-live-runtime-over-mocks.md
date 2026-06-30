@@ -6,8 +6,8 @@ Status: Accepted
 
 The quality gate validates a Medusa v2 commerce backend: regions and pricing,
 product catalog, carts and market-driven shipping, localized catalog content, and
-Admin API access control. Much of this behavior is non-trivial and stateful — it
-spans the API, PostgreSQL, and Redis.
+Admin API access control. Much of this behavior is non-trivial and stateful,
+spanning the API, PostgreSQL, and Redis.
 
 Two broad approaches were available:
 
@@ -35,7 +35,7 @@ Test against a real Medusa runtime brought up with Docker Compose
 
 ## Consequences
 
-- Tests exercise real integration behavior — schema drift, seed assumptions, status
+- Tests exercise real integration behavior. Schema drift, seed assumptions, status
   codes, and DB state are checked against the running system, not a fixture.
 - Contracts are validated against payloads the service actually returns.
 - The runtime is slower to start and requires Docker, so it is not always available

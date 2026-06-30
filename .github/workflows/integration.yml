@@ -95,7 +95,7 @@ jobs:
           passed = tests - failures - errors - skipped
           print(
               f"### {label}\n\n"
-              f"{tests} tests — {passed} passed, {failures} failed, "
+              f"{tests} tests: {passed} passed, {failures} failed, "
               f"{errors} errors, {skipped} skipped in {duration:.1f}s"
           )
           PY

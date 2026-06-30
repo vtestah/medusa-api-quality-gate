@@ -2,7 +2,7 @@
 
 Working notes on how this repository tests the Medusa-based commerce stack: what
 is under test, the layers we test at, where they run, and the gates that have to
-stay green. It is a living document — it tracks the suite as it exists, not an
+stay green. This is a living document. It tracks the suite as it exists, not an
 aspirational spec.
 
 ## Scope and system under test
@@ -41,7 +41,7 @@ down is recorded in [`adr/0002-test-pyramid-and-skip-vs-fail.md`](adr/0002-test-
 
 ### Property-based and unit (no runtime)
 
-Hypothesis property tests cover pure-logic invariants — Store API contract
+Hypothesis property tests cover pure-logic invariants: Store API contract
 parsing, cart aggregation by `variant_id`, cart-client pre-flight, and the
 fail-fast `Settings` validation. Unit and bootstrap checks cover the HTTP
 transport, configuration, and data factories. This layer runs on every push with
@@ -76,7 +76,7 @@ content for RU versus US (title, description, category name). Marker:
 ### Database (cross-layer)
 
 Read-only PostgreSQL reconciliation of API state against database rows via
-`psycopg` — seed counts and cart state observed through the API are checked against
+`psycopg`. Seed counts and cart state observed through the API are checked against
 the rows behind them. No writes. Marker: `db`, guarded by the `db_connection`
 fixture. Lives in `quality-gate/tests/db/`.
 
@@ -110,10 +110,10 @@ runtime today; not yet a CI gate. See [`../k6/README.md`](../k6/README.md).
   variables (`medusa_base_url`, `publishable_key`, `db_url`,
   `admin_email`/`admin_password`, market currencies and shipping methods). Defaults
   target the local Docker runtime, so the suite runs with no configuration locally.
-- **Test data**: the Medusa seed (`pnpm seed`) creates the canonical catalog — two
-  regions (`ru`/`us`), six products, four categories — plus the demo product
-  `basis-heavy-tee` and category `hoodies` used as fixtures. Tests resolve ids at
-  runtime (region by currency, variant from the demo product) rather than
+- **Test data**: the Medusa seed (`pnpm seed`) creates the canonical catalog: two
+  regions (`ru`/`us`), six products, and four categories. It also adds the demo
+  product `basis-heavy-tee` and category `hoodies` used as fixtures. Tests resolve
+  ids at runtime (region by currency, variant from the demo product) rather than
   hard-coding them.
 - **Publishable key**: the Store API requires the `x-publishable-api-key` header.
   It is generated during seed; CI reads it from the `api_key` table in PostgreSQL.
@@ -124,15 +124,15 @@ runtime today; not yet a CI gate. See [`../k6/README.md`](../k6/README.md).
 
 Three GitHub Actions workflows:
 
-1. **`quality-gate.yml`** — fast, no runtime. Runs on Python 3.11 and 3.12:
-   `ruff check`, `mypy --strict`, and `pytest` with coverage. Runtime-bound tests
-   skip automatically when Medusa/PostgreSQL are unavailable; the property and unit
-   layers run on every push. Coverage floor is enforced (`fail_under = 70`).
-2. **`integration.yml`** — brings the runtime up (postgres + redis + medusa), seeds
+1. **`quality-gate.yml`** is the fast one, no runtime. It runs on Python 3.11 and
+   3.12: `ruff check`, `mypy --strict`, and `pytest` with coverage. Runtime-bound
+   tests skip automatically when Medusa/PostgreSQL are unavailable; the property and
+   unit layers run on every push. Coverage floor is enforced (`fail_under = 70`).
+2. **`integration.yml`** brings the runtime up (postgres + redis + medusa), seeds
    demo data, creates the admin user, resolves the publishable key from the
    database, and runs the full pytest suite live. Here the contract / negative /
    cart / db / localization / admin layers execute for real instead of skipping.
-3. **`e2e.yml`** — brings up the full runtime including the storefront, restarts it
+3. **`e2e.yml`** brings up the full runtime including the storefront, restarts it
    with the seeded key, and runs the Playwright RU/US projects.
 
 A change is mergeable when `quality-gate` is green. `integration` and `e2e`
@@ -152,7 +152,7 @@ validate live behavior on `main`/`master`.
 - `ruff` and `mypy --strict` clean.
 - `pytest` green with coverage ≥ 70%.
 - The live integration suite is green against a seeded runtime, with no
-  runtime-bound test silently skipping in CI — skips are reserved for genuinely
+  runtime-bound test silently skipping in CI. Skips are reserved for genuinely
   unavailable infrastructure (locally), not for masking failures.
 - Both Playwright projects (`ru`, `us`) green.
 - Contract models validate real Store API responses with no missing required or

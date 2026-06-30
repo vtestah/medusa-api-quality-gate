@@ -13,7 +13,7 @@ Guards (skip, never fail, on missing infrastructure):
 All reconciliation is read-only: ``DbReconciler`` issues only parameterized
 ``SELECT`` queries and never modifies data. Divergence fails the test
 with explicit expected/actual values. Tests use only Pydantic models and
-reconciler methods — no raw SQL.
+reconciler methods, never raw SQL.
 """
 
 import pytest

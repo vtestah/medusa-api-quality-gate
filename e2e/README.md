@@ -6,13 +6,13 @@ the same flows per market through a Page Object Model.
 
 ## Layout
 
-- `tests/` — specs (`smoke`, `localization`, `cart`, `a11y`).
-- `src/pages/` — Page Object Model (`base`, `home`, `store`, `cart`).
-- `src/fixtures.ts` — per-market fixtures exposing the page objects and the
+- `tests/`: the specs (`smoke`, `localization`, `cart`, `a11y`).
+- `src/pages/` holds the Page Object Model (`base`, `home`, `store`, `cart`).
+- `src/fixtures.ts`: per-market fixtures that expose the page objects and the
   active `market` profile.
-- `src/market.ts` — RU/US market profiles (path prefix, locale, currency,
+- `src/market.ts` defines the RU/US market profiles (path prefix, locale, currency,
   shipping methods).
-- `playwright.config.ts` — projects, reporters and base URL.
+- `playwright.config.ts`: projects, reporters and base URL.
 
 ## Prerequisites
 
@@ -43,8 +43,8 @@ test steps in one command (it expects the runtime to be up).
 
 Two projects are defined, `ru` and `us`. Both run the same specs; each sets a
 `marketCode` that drives the localized URL prefix (`/ru`, `/us`), the expected
-currency and the market-specific shipping options. A spec written once is
-therefore checked against both markets.
+currency and the market-specific shipping options. Write a spec once and it runs
+against both markets.
 
 ## Reports
 

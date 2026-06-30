@@ -14,7 +14,7 @@ repos:
       - id: check-added-large-files
 
   # ruff и mypy запускаем в venv проекта (совпадает с CI и строгим конфигом),
-  # а не в изолированном окружении pre-commit — иначе strict mypy не видит зависимости.
+  # а не в изолированном окружении pre-commit, иначе strict mypy не видит зависимости.
   - repo: local
     hooks:
       - id: ruff
