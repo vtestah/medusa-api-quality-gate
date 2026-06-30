@@ -2,12 +2,12 @@
 
 These run against the live Medusa runtime and are guarded by ``runtime_ready`` so
 they skip cleanly when the runtime is unavailable. They are parametrized over
-``settings.markets`` (Req 5.8): for each market they create a cart in the matching
+``settings.markets``: for each market they create a cart in the matching
 region, assert the cart's ``currency_code`` matches the configured market currency
-(Req 5.3 ru -> rub, Req 5.4 us -> usd), assert the available shipping option names
-exactly equal the configured shipping-method set (Req 5.1 RU set, Req 5.2 US set),
-and select one available method, confirming it is recorded on the returned cart
-(Req 5.5). All assertions use Pydantic models, never raw dict keys (Req 7.1).
+(ru -> rub, us -> usd), assert the available shipping option names
+exactly equal the configured shipping-method set, and select one available method,
+confirming it is recorded on the returned cart. All assertions use Pydantic models,
+never raw dict keys.
 """
 
 import pytest
@@ -52,7 +52,7 @@ def test_cart_currency_matches_market(
 
     Resolves the region for ``market_code`` by currency, creates a cart, and
     asserts ``cart.currency_code`` equals the configured market currency
-    (Req 5.3 ru -> rub, Req 5.4 us -> usd). The strict ``Cart.currency_code``
+    (ru -> rub, us -> usd). The strict ``Cart.currency_code``
     literal also guarantees the value is exactly lowercase ``rub``/``usd``.
     """
 
@@ -77,7 +77,7 @@ def test_shipping_options_match_market_methods(
     """Available shipping option names equal the market's configured method set.
 
     Asserts the canonical Store API option names per market (read from
-    ``settings.markets``, not hard-coded, Req 5.8): the RU market exposes three
+    ``settings.markets``, not hard-coded): the RU market exposes three
     courier/pickup options and the US market exposes two standard/express
     options. Localized *display* names (e.g. RU «Курьер») are verified at the UI
     layer by the Playwright e2e suite.
@@ -109,7 +109,7 @@ def test_selected_shipping_method_recorded_on_cart(
     Lists the options for the market's cart, selects the first available option
     (passing ``available_options`` so the pre-flight check is satisfied), and
     asserts the returned cart records the selected method, matching the chosen
-    option id (Req 5.5).
+    option id.
     """
 
     region_id = _resolve_region_id(store_regions_client, settings, market_code)

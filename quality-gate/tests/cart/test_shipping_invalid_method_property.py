@@ -1,7 +1,4 @@
-"""Property-based checks for StoreShippingClient invalid shipping-method rejection.
-
-# Feature: test-coverage-expansion, Property 6: Недопустимый shipping-метод отклоняется без изменения корзины
-"""
+"""Property-based checks for StoreShippingClient invalid shipping-method rejection."""
 
 from unittest.mock import MagicMock
 
@@ -55,7 +52,6 @@ def _shipping_options(draw: st.DrawFn) -> list[ShippingOption]:
     ]
 
 
-# Feature: test-coverage-expansion, Property 6: Недопустимый shipping-метод отклоняется без изменения корзины
 @settings(max_examples=100)
 @given(available_options=_shipping_options(), option_id=_absent_option_ids)
 def test_select_shipping_method_rejects_absent_option_without_http(
@@ -67,8 +63,6 @@ def test_select_shipping_method_rejects_absent_option_without_http(
     available option ids are letter-only, so the candidate is guaranteed absent.
     The call must raise ``ShippingOptionError`` and never touch the network, which
     leaves the cart (and its previously selected method) unchanged.
-
-    Validates: Requirements 5.7
     """
 
     client, mock_session = _make_client()

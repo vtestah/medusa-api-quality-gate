@@ -1,7 +1,4 @@
-"""Property-based checks for fail-fast Settings construction.
-
-# Feature: test-coverage-expansion, Property 7: Settings падает на этапе конфигурации при недопустимых значениях
-"""
+"""Property-based checks for fail-fast Settings construction."""
 
 import pytest
 from hypothesis import given, settings
@@ -38,7 +35,6 @@ urls_without_scheme = (
 )
 
 
-# Feature: test-coverage-expansion, Property 7: Settings падает на этапе конфигурации при недопустимых значениях
 @settings(max_examples=100)
 @given(field_name=st.sampled_from(BLANK_REJECTING_FIELDS), blank_value=blank_values)
 def test_settings_rejects_blank_required_values(field_name: str, blank_value: str) -> None:
@@ -54,7 +50,6 @@ def test_settings_rejects_blank_required_values(field_name: str, blank_value: st
         Settings(_env_file=None, **{field_name: blank_value})  # type: ignore[arg-type]
 
 
-# Feature: test-coverage-expansion, Property 7: Settings падает на этапе конфигурации при недопустимых значениях
 @settings(max_examples=100)
 @given(base_url=urls_without_scheme)
 def test_settings_rejects_base_url_without_http_scheme(base_url: str) -> None:

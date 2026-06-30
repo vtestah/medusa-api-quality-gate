@@ -1,7 +1,4 @@
-"""Property-based check for cart line-item aggregation by ``variant_id``.
-
-# Feature: test-coverage-expansion, Property 4: Состав корзины корректно агрегируется по variant_id
-"""
+"""Property-based check for cart line-item aggregation by ``variant_id``."""
 
 from collections import OrderedDict
 from collections.abc import Sequence
@@ -31,16 +28,12 @@ quantities = st.integers(min_value=1, max_value=1000)
 additions_strategy = st.lists(st.tuples(variant_ids, quantities), max_size=30)
 
 
-# Feature: test-coverage-expansion, Property 4: Состав корзины корректно агрегируется по variant_id
 @settings(max_examples=100)
 @given(additions=additions_strategy)
 def test_aggregate_line_items_collapses_by_variant_id(
     additions: Sequence[tuple[str, int]],
 ) -> None:
-    """One LineItem per unique variant_id, quantity equal to the sum of additions.
-
-    Validates: Requirements 4.3, 4.4
-    """
+    """One LineItem per unique variant_id, quantity equal to the sum of additions."""
 
     result = aggregate_line_items(additions)
 

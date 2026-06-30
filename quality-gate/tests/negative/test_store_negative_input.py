@@ -1,13 +1,11 @@
 """Negative input-validation integration tests for the Medusa Store API.
 
-A single file grouped by risk type (negative input validation) per Req 2.8 — no
+A single file grouped by risk type (negative input validation) — no
 ad-hoc ``sanity``/``preflight`` directories. Every test runs against the live
 Medusa runtime and is guarded by ``runtime_ready`` so it skips cleanly when the
 runtime is down. All response/error bodies are parsed through Pydantic models
-(``StoreApiError``, ``ProductsResponse``) rather than raw dict access (Req 7.1),
+(``StoreApiError``, ``ProductsResponse``) rather than raw dict access,
 and error responses are validated without suppression.
-
-Covers Req 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8.
 """
 
 from typing import Any
@@ -40,7 +38,7 @@ def test_missing_publishable_key_is_rejected(
     api_session: requests.Session,
     settings: Settings,
 ) -> None:
-    """GET /store/products without the publishable key → status in {400, 401} (Req 2.1).
+    """GET /store/products without the publishable key → status in {400, 401}.
 
     The shared ``api_session`` carries only an ``Accept`` header, so issuing the
     request without ``settings.store_headers`` guarantees the
@@ -64,7 +62,7 @@ def test_wrong_publishable_key_is_rejected_and_body_parses(
     api_session: requests.Session,
     settings: Settings,
 ) -> None:
-    """Wrong publishable key → status in {400, 401} and error body parses (Req 2.2).
+    """Wrong publishable key → status in {400, 401} and error body parses.
 
     The error body is validated through ``StoreApiError`` without suppression,
     confirming it is a contract-compatible JSON object.
@@ -91,7 +89,7 @@ def test_broken_json_cart_payload_is_rejected(
     api_session: requests.Session,
     settings: Settings,
 ) -> None:
-    """Syntactically invalid JSON cart payload is rejected (Req 2.4).
+    """Syntactically invalid JSON cart payload is rejected.
 
     The raw, malformed body is sent via the session directly (the client always
     serializes valid JSON), so this exercises the server's JSON parser. Medusa
@@ -129,7 +127,7 @@ def test_empty_cart_payload_is_accepted(
     runtime_ready: None,
     store_cart_client: StoreCartClient,
 ) -> None:
-    """Empty JSON cart payload is accepted by Medusa (Req 2.5, observed contract).
+    """Empty JSON cart payload is accepted by Medusa (observed contract).
 
     Medusa's Store API permits header-only cart creation (region/currency are
     optional at creation time), so an empty ``{}`` body returns 200 with a new
@@ -155,7 +153,7 @@ def test_zero_quantity_line_item_returns_400(
     store_regions_client: StoreRegionsClient,
     demo_variant_id: str,
 ) -> None:
-    """Line item with ``quantity`` of 0 → 400 via the Store API (Req 2.7).
+    """Line item with ``quantity`` of 0 → 400 via the Store API.
 
     ``add_line_item_response`` is used (not ``add_line_item``) because the latter
     rejects ``quantity < 1`` in pre-flight; here we want the server to validate
@@ -184,7 +182,7 @@ def test_nonexistent_handle_returns_empty_product_list(
     runtime_ready: None,
     store_products_client: StoreProductsClient,
 ) -> None:
-    """Nonexistent ``handle`` → 200 with an empty ``products`` list (Req 2.3)."""
+    """Nonexistent ``handle`` → 200 with an empty ``products`` list."""
 
     response = store_products_client.list_products(handle="does-not-exist-xyz")
 
@@ -200,7 +198,7 @@ def test_wrong_locale_does_not_return_5xx(
     api_session: requests.Session,
     settings: Settings,
 ) -> None:
-    """Invalid ``x-medusa-locale`` → status not in 5xx, body parses (Req 2.6).
+    """Invalid ``x-medusa-locale`` → status not in 5xx, body parses.
 
     A direct session GET captures the raw status for the fallback-behavior
     contract. A 2xx body is validated as ``ProductsResponse``; any non-2xx body

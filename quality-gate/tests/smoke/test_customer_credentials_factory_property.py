@@ -1,7 +1,4 @@
-"""Property-based checks for the customer test-data factory.
-
-# Feature: test-coverage-expansion, Property 8: Фабрика тестовых данных всегда производит валидные и уникальные данные
-"""
+"""Property-based checks for the customer test-data factory."""
 
 from string import ascii_lowercase, ascii_uppercase, digits
 

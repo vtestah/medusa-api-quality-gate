@@ -1,7 +1,4 @@
-"""Property-based checks for the strict required-field contract of Store models.
-
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
-"""
+"""Property-based checks for the strict required-field contract of Store models."""
 
 import pytest
 from hypothesis import given, settings
@@ -62,7 +59,6 @@ def _product_payloads(draw: st.DrawFn) -> dict[str, object]:
     }
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_region_payloads(), missing_field=st.sampled_from(_REGION_REQUIRED_SCALARS))
 def test_region_rejects_missing_required_scalar(
@@ -76,7 +72,6 @@ def test_region_rejects_missing_required_scalar(
         StoreRegion.model_validate(broken)
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_product_payloads(), missing_field=st.sampled_from(_PRODUCT_REQUIRED_SCALARS))
 def test_product_rejects_missing_required_scalar(
@@ -90,7 +85,6 @@ def test_product_rejects_missing_required_scalar(
         StoreProduct.model_validate(broken)
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_region_payloads())
 def test_valid_region_payload_parses(payload: dict[str, object]) -> None:
@@ -102,7 +96,6 @@ def test_valid_region_payload_parses(payload: dict[str, object]) -> None:
     assert region.currency_code == payload["currency_code"]
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_product_payloads())
 def test_valid_product_payload_parses(payload: dict[str, object]) -> None:
@@ -114,7 +107,6 @@ def test_valid_product_payload_parses(payload: dict[str, object]) -> None:
     assert product.title == payload["title"]
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_region_payloads())
 def test_region_without_countries_defaults_to_empty_list(payload: dict[str, object]) -> None:
@@ -127,7 +119,6 @@ def test_region_without_countries_defaults_to_empty_list(payload: dict[str, obje
     assert region.countries == []
 
 
-# Feature: test-coverage-expansion, Property 1: Контракт обязательных полей строго проверяется
 @settings(max_examples=100)
 @given(payload=_product_payloads())
 def test_product_without_variants_defaults_to_empty_list(payload: dict[str, object]) -> None:

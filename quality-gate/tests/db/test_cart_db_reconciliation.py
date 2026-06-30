@@ -1,4 +1,4 @@
-"""Cross-layer DB reconciliation integration tests (Req 6).
+"""Cross-layer DB reconciliation integration tests.
 
 These are LIVE tests requiring BOTH the Medusa Store API and PostgreSQL. They
 reconcile state observed through the Store API against rows in PostgreSQL using
@@ -8,12 +8,12 @@ Guards (skip, never fail, on missing infrastructure):
 
 - ``ru_cart`` depends on ``runtime_ready`` and skips when Medusa is down.
 - ``db_reconciler`` is built on ``db_connection``, which skips when PostgreSQL is
-  unavailable (Req 6.6).
+  unavailable.
 
 All reconciliation is read-only: ``DbReconciler`` issues only parameterized
-``SELECT`` queries and never modifies data (Req 6.5). Divergence fails the test
+``SELECT`` queries and never modifies data. Divergence fails the test
 with explicit expected/actual values. Tests use only Pydantic models and
-reconciler methods — no raw SQL (Req 7.1).
+reconciler methods — no raw SQL.
 """
 
 import pytest
@@ -28,7 +28,7 @@ def test_created_cart_has_exactly_one_db_row(
     ru_cart: Cart,
     db_reconciler: DbReconciler,
 ) -> None:
-    """A cart created via the Store API maps to exactly one PostgreSQL row (Req 6.1)."""
+    """A cart created via the Store API maps to exactly one PostgreSQL row."""
 
     expected_rows = 1
     actual_rows = db_reconciler.count_carts_by_id(ru_cart.id)
@@ -46,7 +46,7 @@ def test_line_item_count_matches_api_response(
     store_cart_client: StoreCartClient,
     db_reconciler: DbReconciler,
 ) -> None:
-    """DB line-item rows equal the number of items in the API cart response (Req 6.2).
+    """DB line-item rows equal the number of items in the API cart response.
 
     Adds the demo variant twice with distinct quantities. Medusa aggregates repeat
     additions of the same variant into a single line item, so the API response and
@@ -75,7 +75,7 @@ def test_cart_region_currency_matches_api(
     ru_cart: Cart,
     db_reconciler: DbReconciler,
 ) -> None:
-    """The cart region's currency in PostgreSQL matches the API currency_code (Req 6.4)."""
+    """The cart region's currency in PostgreSQL matches the API currency_code."""
 
     expected_currency = ru_cart.currency_code
     actual_currency = db_reconciler.fetch_cart_region_currency(ru_cart.id)

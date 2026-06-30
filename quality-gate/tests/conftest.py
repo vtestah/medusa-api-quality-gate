@@ -200,7 +200,7 @@ def demo_variant_id(
     """Resolve a variant id from the Demo_Product via the Store Products client.
 
     Fetches the demo product by its configured handle and returns the first
-    variant id, so tests never hard-code identifiers (Req 4.5). Skips when the
+    variant id, so tests never hard-code identifiers. Skips when the
     product or a variant is not present in the live runtime.
     """
 
@@ -224,7 +224,7 @@ def ru_cart(
     settings: Settings,
     runtime_ready: None,
 ) -> Iterator[Cart]:
-    """Provide a freshly created RU-market cart with yield-teardown (Req 3.8, 7.6)."""
+    """Provide a freshly created RU-market cart with yield-teardown."""
 
     region_id = _resolve_region_id(store_regions_client, settings, "ru")
     cart = store_cart_client.create_cart(region_id=region_id)
@@ -234,7 +234,7 @@ def ru_cart(
         # Best-effort cleanup: the runtime is read-only seeded data and the Store
         # API exposes no cart-delete endpoint, so there is no resource to release
         # here. The try/finally structure is kept so teardown runs even when a
-        # test raises (Req 7.6).
+        # test raises.
         pass
 
 
@@ -245,7 +245,7 @@ def us_cart(
     settings: Settings,
     runtime_ready: None,
 ) -> Iterator[Cart]:
-    """Provide a freshly created US-market cart with yield-teardown (Req 3.8, 7.6)."""
+    """Provide a freshly created US-market cart with yield-teardown."""
 
     region_id = _resolve_region_id(store_regions_client, settings, "us")
     cart = store_cart_client.create_cart(region_id=region_id)
@@ -253,7 +253,7 @@ def us_cart(
         yield cart
     finally:
         # Best-effort cleanup: see ``ru_cart`` for rationale. The try/finally is
-        # retained so teardown runs even on test failure (Req 7.6).
+        # retained so teardown runs even on test failure.
         pass
 
 
@@ -262,7 +262,7 @@ def db_reconciler(db_connection: PostgresDb) -> DbReconciler:
     """Read-only cross-layer reconciler over the guarded PostgreSQL connection.
 
     Built on top of ``db_connection``, which already skips DB-bound tests when
-    PostgreSQL is unavailable (Req 6.6).
+    PostgreSQL is unavailable.
     """
 
     return DbReconciler(db_connection)

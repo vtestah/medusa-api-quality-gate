@@ -1,7 +1,4 @@
-"""Property-based checks that the contract round-trip preserves validated fields.
-
-# Feature: test-coverage-expansion, Property 2: Контрактный round-trip сохраняет провалидированные поля
-"""
+"""Property-based checks that the contract round-trip preserves validated fields."""
 
 import pytest
 from hypothesis import given, settings
@@ -88,14 +85,10 @@ def _carts(draw: st.DrawFn) -> Cart:
     )
 
 
-# Feature: test-coverage-expansion, Property 2: Контрактный round-trip сохраняет провалидированные поля
 @settings(max_examples=100)
 @given(region=_regions())
 def test_region_round_trip_preserves_fields(region: StoreRegion) -> None:
-    """Round-trip региона сохраняет все провалидированные поля.
-
-    Validates: Requirements 1.4, 1.8
-    """
+    """Round-trip региона сохраняет все провалидированные поля."""
     reparsed = assert_round_trip(region)
 
     assert reparsed.model_dump() == region.model_dump()
@@ -104,14 +97,10 @@ def test_region_round_trip_preserves_fields(region: StoreRegion) -> None:
     assert reparsed.currency_code == region.currency_code
 
 
-# Feature: test-coverage-expansion, Property 2: Контрактный round-trip сохраняет провалидированные поля
 @settings(max_examples=100)
 @given(product=_products())
 def test_product_round_trip_preserves_fields(product: StoreProduct) -> None:
-    """Round-trip продукта сохраняет все провалидированные поля.
-
-    Validates: Requirements 1.4, 1.8
-    """
+    """Round-trip продукта сохраняет все провалидированные поля."""
     reparsed = assert_round_trip(product)
 
     assert reparsed.model_dump() == product.model_dump()
@@ -120,14 +109,10 @@ def test_product_round_trip_preserves_fields(product: StoreProduct) -> None:
     assert reparsed.title == product.title
 
 
-# Feature: test-coverage-expansion, Property 2: Контрактный round-trip сохраняет провалидированные поля
 @settings(max_examples=100)
 @given(cart=_carts())
 def test_cart_round_trip_preserves_fields(cart: Cart) -> None:
-    """Round-trip корзины сохраняет все провалидированные поля.
-
-    Validates: Requirements 1.4, 1.8
-    """
+    """Round-trip корзины сохраняет все провалидированные поля."""
     reparsed = assert_round_trip(cart)
 
     assert reparsed.model_dump() == cart.model_dump()

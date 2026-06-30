@@ -5,8 +5,8 @@ skip cleanly when the runtime is unavailable. They cover the happy path (adding 
 line item and re-adding the same variant to confirm aggregation) and negative
 paths (a non-existent variant and a pre-flight rejected ``quantity``). The
 ``variant_id`` always comes from the ``demo_variant_id`` fixture (Demo_Product via
-the products client), never a hard-coded id (Req 4.5). All response assertions use
-Pydantic models, never raw dict keys (Req 7.1).
+the products client), never a hard-coded id. All response assertions use
+Pydantic models, never raw dict keys.
 """
 
 import pytest
@@ -38,8 +38,7 @@ def test_add_line_item_records_variant_and_quantity(
     """Adding a line item yields a cart containing that variant at the requested qty.
 
     The returned :class:`Cart` must contain a :class:`LineItem` referencing the
-    requested ``variant_id`` with ``quantity`` equal to what was requested
-    (Req 4.1, 4.2).
+    requested ``variant_id`` with ``quantity`` equal to what was requested.
     """
 
     requested_quantity = 2
@@ -64,8 +63,7 @@ def test_re_adding_same_variant_aggregates_quantity(
     """Re-adding the same variant keeps one line item and sums the quantities.
 
     The number of distinct line items for the variant must not increase, and the
-    matching :class:`LineItem.quantity` must equal the sum of both additions
-    (Req 4.3, 4.4).
+    matching :class:`LineItem.quantity` must equal the sum of both additions.
     """
 
     first_quantity = 2
@@ -107,7 +105,7 @@ def test_add_nonexistent_variant_returns_error_and_leaves_cart_unchanged(
     The low-level ``add_line_item_response`` returns the raw response without
     validating the body, so the test asserts a non-2xx status, parses the error
     body via :class:`StoreApiError` without raising, and confirms (best-effort)
-    the cart composition is unchanged (Req 4.6).
+    the cart composition is unchanged.
     """
 
     # Seed the cart with a known-good line item so we have a composition baseline.
@@ -149,7 +147,7 @@ def test_add_line_item_zero_quantity_rejected_preflight(
     """A ``quantity`` below 1 is rejected pre-flight before any HTTP request.
 
     ``add_line_item`` raises :class:`ClientValidationError` for ``quantity=0``
-    without sending a request, leaving the cart unchanged (Req 4.7).
+    without sending a request, leaving the cart unchanged.
     """
 
     with pytest.raises(ClientValidationError):

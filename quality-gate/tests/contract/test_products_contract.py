@@ -4,7 +4,7 @@ These run against the live Medusa runtime and are guarded by ``runtime_ready``
 so they skip cleanly when the runtime is unavailable. They assert that every
 product returned by the Store API satisfies the strict Pydantic contract and
 survives the Round_Trip_Check, surfacing contract violations loudly rather than
-suppressing them (Req 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 7.1).
+suppressing them.
 """
 
 import pytest
@@ -24,10 +24,9 @@ def test_products_satisfy_strict_contract_and_round_trip(
 
     ``list_products`` parses the response through ``ProductsResponse``; a contract
     violation (missing or wrongly typed ``id``/``handle``/``title``) would raise a
-    ``ValidationError`` here and fail the test rather than being suppressed
-    (Req 1.2, 1.3, 1.7). Round-trip checks confirm validated fields are stable
-    (Req 1.4, 1.8). All assertions use the Pydantic models, never raw dict keys
-    (Req 7.1).
+    ``ValidationError`` here and fail the test rather than being suppressed.
+    Round-trip checks confirm validated fields are stable. All assertions use the
+    Pydantic models, never raw dict keys.
     """
 
     response = store_products_client.list_products(

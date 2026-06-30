@@ -4,9 +4,8 @@ These strict Pydantic models describe the Store API cart and shipping payloads:
 ``Cart`` constrains ``currency_code`` to the supported lowercase literals,
 ``LineItem`` enforces ``quantity >= 1``, and the response wrappers mirror the
 Medusa envelope shapes. :func:`aggregate_line_items` is a pure, side-effect-free
-function used by the model-based property test (Property 4): it collapses a
-sequence of ``(variant_id, quantity)`` additions into exactly one ``LineItem``
-per unique ``variant_id`` with the quantities summed.
+helper that collapses a sequence of ``(variant_id, quantity)`` additions into
+exactly one ``LineItem`` per unique ``variant_id`` with the quantities summed.
 """
 
 from collections import OrderedDict

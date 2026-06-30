@@ -1,7 +1,4 @@
-"""Property-based checks for StoreCartClient pre-flight argument validation.
-
-# Feature: test-coverage-expansion, Property 5: Pre-flight валидация клиента отклоняет недопустимые аргументы до HTTP
-"""
+"""Property-based checks for StoreCartClient pre-flight argument validation."""
 
 from unittest.mock import MagicMock
 
@@ -40,14 +37,10 @@ blank_region_ids = st.text(alphabet=" \t\n\r\f\v", max_size=6)
 invalid_quantities = st.integers(max_value=0)
 
 
-# Feature: test-coverage-expansion, Property 5: Pre-flight валидация клиента отклоняет недопустимые аргументы до HTTP
 @settings(max_examples=100)
 @given(region_id=blank_region_ids)
 def test_create_cart_rejects_blank_region_id_without_http(region_id: str) -> None:
-    """Blank/whitespace region_id raises ClientValidationError before any HTTP call.
-
-    Validates: Requirements 3.3, 4.7
-    """
+    """Blank/whitespace region_id raises ClientValidationError before any HTTP call."""
 
     client, mock_session = _make_client()
 
@@ -58,14 +51,10 @@ def test_create_cart_rejects_blank_region_id_without_http(region_id: str) -> Non
     mock_session.post.assert_not_called()
 
 
-# Feature: test-coverage-expansion, Property 5: Pre-flight валидация клиента отклоняет недопустимые аргументы до HTTP
 @settings(max_examples=100)
 @given(quantity=invalid_quantities)
 def test_add_line_item_rejects_non_positive_quantity_without_http(quantity: int) -> None:
-    """Quantity below 1 raises ClientValidationError before any HTTP call.
-
-    Validates: Requirements 3.3, 4.7
-    """
+    """Quantity below 1 raises ClientValidationError before any HTTP call."""
 
     client, mock_session = _make_client()
 
@@ -76,15 +65,12 @@ def test_add_line_item_rejects_non_positive_quantity_without_http(quantity: int)
     mock_session.post.assert_not_called()
 
 
-# Feature: test-coverage-expansion, Property 5: Pre-flight валидация клиента отклоняет недопустимые аргументы до HTTP
 @pytest.mark.parametrize("quantity", [True, False])
 def test_add_line_item_rejects_bool_quantity_without_http(quantity: bool) -> None:
     """A bool quantity (an int subclass) is rejected pre-flight, with no HTTP call.
 
     Booleans are the tricky case: ``True`` is ``1`` and ``False`` is ``0`` at the
     int level, so they must be rejected explicitly before any request.
-
-    Validates: Requirements 3.3, 4.7
     """
 
     client, mock_session = _make_client()
