@@ -1,6 +1,7 @@
 # medusa-api-quality-gate
 
 [![quality-gate CI](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/quality-gate.yml)
+[![integration](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/integration.yml/badge.svg)](https://github.com/vtestah/medusa-api-quality-gate/actions/workflows/integration.yml)
 ![coverage](https://img.shields.io/badge/coverage-76%25-brightgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12-3776AB)
