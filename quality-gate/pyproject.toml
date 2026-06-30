@@ -17,7 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.2,<9.0",
+  "pytest>=8.2,<10.0",
   "pytest-html>=4.2,<5.0",
   "allure-pytest>=2.13,<3.0",
   "hypothesis>=6,<7",
