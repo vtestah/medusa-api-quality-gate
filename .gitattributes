@@ -1,0 +1,4 @@
+# The Medusa backend and Next.js storefront under apps/ are upstream starters,
+# not the work this repo is about. Exclude them from GitHub's language stats so
+# the quality-gate (Python) and e2e (TypeScript) test code is what shows.
+apps/** linguist-vendored
