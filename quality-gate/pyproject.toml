@@ -41,6 +41,7 @@ markers = [
   "db: state verification через PostgreSQL",
   "bootstrap: проверки локального Python bootstrap и окружения",
   "cart: проверки cart и checkout flows (создание корзины, line items, shipping)",
+  "admin: проверки Admin API (аутентификация и авторизация)",
 ]
 
 [tool.setuptools.packages.find]

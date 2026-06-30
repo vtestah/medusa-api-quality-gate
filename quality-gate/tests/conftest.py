@@ -6,6 +6,7 @@ import pytest
 import requests
 
 from quality_gate.clients import (
+    AdminApiClient,
     HealthClient,
     StoreAuthClient,
     StoreCartClient,
@@ -63,6 +64,16 @@ def store_auth_client(
     """Reusable storefront auth client for module-level tests."""
 
     return StoreAuthClient(api_session, settings)
+
+
+@pytest.fixture(scope="module")
+def admin_client(
+    api_session: requests.Session,
+    settings: Settings,
+) -> AdminApiClient:
+    """Reusable Admin API client for module-level tests."""
+
+    return AdminApiClient(api_session, settings)
 
 
 @pytest.fixture(scope="module")

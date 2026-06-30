@@ -34,6 +34,9 @@ jobs:
       - name: Seed demo data
         run: docker compose exec -T medusa pnpm seed
 
+      - name: Create the admin user (for Admin API tests)
+        run: docker compose exec -T medusa pnpm exec medusa user -e admin@example.com -p supersecret
+
       - name: Resolve publishable key from the database
         id: key
         run: |
@@ -49,6 +52,8 @@ jobs:
           QUALITY_GATE_MEDUSA_BASE_URL: http://localhost:9000
           QUALITY_GATE_PUBLISHABLE_KEY: ${{ steps.key.outputs.value }}
           QUALITY_GATE_DB_URL: postgresql://postgres:postgres@localhost:5433/medusa
+          QUALITY_GATE_ADMIN_EMAIL: admin@example.com
+          QUALITY_GATE_ADMIN_PASSWORD: supersecret
         run: python -m pytest -ra -q --cov-report=xml
 
       - name: Medusa logs (on failure)

@@ -65,7 +65,7 @@ Structure:
 quality-gate/
 ├── pyproject.toml
 ├── src/quality_gate/
-│   ├── clients/   # Service Object clients: health, regions, products, categories, cart, shipping
+│   ├── clients/   # Service Object clients: health, regions, products, categories, cart, shipping, admin
 │   ├── models/    # Pydantic v2 contracts: regions, products, cart, errors + round-trip helpers
 │   ├── db/        # read-only PostgreSQL helpers and cross-layer reconciler
 │   ├── config.py  # env-based Settings with RU/US market profiles
@@ -76,6 +76,7 @@ quality-gate/
     ├── negative/      # Store API negative input scenarios
     ├── cart/          # cart/checkout flows and market-driven shipping (incl. property-based)
     ├── localization/  # x-medusa-locale contract checks
+    ├── admin/         # Admin API auth + authorization (live + mocked unit)
     └── db/            # cross-layer PostgreSQL reconciliation
 ```
 

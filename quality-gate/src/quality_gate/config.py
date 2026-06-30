@@ -82,6 +82,14 @@ class Settings(BaseSettings):
         default=frozenset({"Standard Shipping", "Express Shipping"}),
         alias="QUALITY_GATE_US_SHIPPING_METHODS",
     )
+    admin_email: str = Field(
+        default="admin@example.com",
+        alias="QUALITY_GATE_ADMIN_EMAIL",
+    )
+    admin_password: str = Field(
+        default="supersecret",
+        alias="QUALITY_GATE_ADMIN_PASSWORD",
+    )
 
     model_config = SettingsConfigDict(
         env_file=("../.env", ".env"),
@@ -100,6 +108,8 @@ class Settings(BaseSettings):
         "demo_category_handle",
         "ru_currency_code",
         "us_currency_code",
+        "admin_email",
+        "admin_password",
     )
     @classmethod
     def _reject_blank_env_values(cls, value: str) -> str:
